@@ -441,22 +441,41 @@ function App() {
             </Button>
           </div>
           
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="chats">
-                <MessageCircle className="h-4 w-4 mr-1" />
-                Chats
-              </TabsTrigger>
-              <TabsTrigger value="friends">
-                <Users className="h-4 w-4 mr-1" />
-                Friends
-              </TabsTrigger>
-              <TabsTrigger value="moments">
-                <Star className="h-4 w-4 mr-1" />
-                Moments
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+            <button
+              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'chats' 
+                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('chats')}
+            >
+              <MessageCircle className="h-4 w-4 mr-1" />
+              Chats
+            </button>
+            <button
+              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'friends' 
+                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('friends')}
+            >
+              <Users className="h-4 w-4 mr-1" />
+              Friends
+            </button>
+            <button
+              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'moments' 
+                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('moments')}
+            >
+              <Star className="h-4 w-4 mr-1" />
+              Moments
+            </button>
+          </div>
         </div>
 
         {/* Search */}
