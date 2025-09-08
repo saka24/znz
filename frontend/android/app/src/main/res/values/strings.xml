@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SISI Chat</string>
+    <string name="title_activity_main">SISI Chat</string>
+    <string name="package_name">com.sisichat.app</string>
+    <string name="custom_url_scheme">com.sisichat.app</string>
+</resources>
