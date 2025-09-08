@@ -499,7 +499,7 @@ function App() {
                 <Card 
                   key={chat.id} 
                   className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-                    activeChat?.id === chat.id ? 'bg-emerald-50 border-emerald-200' : ''
+                    activeChat?.id === chat.id ? 'bg-orange-50 border-orange-200' : ''
                   }`}
                   onClick={() => setActiveChat(chat)}
                 >
