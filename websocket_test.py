@@ -16,7 +16,7 @@ class WebSocketTester:
         try:
             # Connect to WebSocket
             uri = f"{self.ws_url}/ws/{user_id}"
-            async with websockets.connect(uri, timeout=10) as websocket:
+            async with websockets.connect(uri) as websocket:
                 print("✅ WebSocket connection established")
                 
                 # Test sending a chat message
