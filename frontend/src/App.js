@@ -327,7 +327,7 @@ function App() {
         <Toaster position="top-right" />
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-emerald-700">
+            <CardTitle className="text-2xl font-bold text-orange-700">
               {showLogin ? 'Welcome Back' : 'Join WeChat Clone'}
             </CardTitle>
           </CardHeader>
