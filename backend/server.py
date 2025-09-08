@@ -264,7 +264,14 @@ async def login_user(user_data: UserLogin):
 @app.get("/api/chats")
 async def get_user_chats(current_user: str = Depends(get_current_user)):
     chats = await db.chats.find({"participants": current_user}).to_list(100)
-    return chats
+    
+    # Convert MongoDB documents to proper format
+    return [
+        {
+            **chat,
+            "_id": str(chat["_id"]) if "_id" in chat else None
+        } for chat in chats
+    ]
 
 @app.post("/api/chats")
 async def create_chat(chat_data: dict, current_user: str = Depends(get_current_user)):
