@@ -1,0 +1,31 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle with Gradient -->
+  <circle cx="512" cy="512" r="512" fill="url(#background)"/>
+  
+  <!-- Main Chat Bubble -->
+  <path d="M312 320C312 286.863 338.863 260 372 260H652C685.137 260 712 286.863 712 320V560C712 593.137 685.137 620 652 620H472L372 700V620C338.863 620 312 593.137 312 560V320Z" fill="white" fill-opacity="0.95"/>
+  
+  <!-- Secondary Chat Bubble -->
+  <path d="M392 420C392 397.909 409.909 380 432 380H632C654.091 380 672 397.909 672 420V580C672 602.091 654.091 620 632 620H512L432 680V620C409.909 620 392 602.091 392 580V420Z" fill="url(#bubbleGradient)"/>
+  
+  <!-- Chat Dots -->
+  <circle cx="482" cy="500" r="18" fill="white" fill-opacity="0.9"/>
+  <circle cx="542" cy="500" r="18" fill="white" fill-opacity="0.9"/>
+  <circle cx="602" cy="500" r="18" fill="white" fill-opacity="0.9"/>
+  
+  <!-- SISI Text -->
+  <text x="512" y="780" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="80" font-weight="bold">SISI</text>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="background" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#14b8a6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bubbleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+</svg>
