@@ -128,7 +128,7 @@ body {
 
 .btn-hover:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
 }
 
 /* Glass morphism effect */
