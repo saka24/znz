@@ -68,9 +68,9 @@ const generateIcons = async () => {
       <text x="512" y="350" text-anchor="middle" fill="white" font-family="Arial" font-size="24" opacity="0.7">Real-time chat • AI suggestions • Secure payments</text>
       <defs>
         <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#10b981"/>
-          <stop offset="50%" style="stop-color:#14b8a6"/>
-          <stop offset="100%" style="stop-color:#06b6d4"/>
+          <stop offset="0%" style="stop-color:#f97316"/>
+          <stop offset="50%" style="stop-color:#ea580c"/>
+          <stop offset="100%" style="stop-color:#dc2626"/>
         </linearGradient>
       </defs>
     </svg>
