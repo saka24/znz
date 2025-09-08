@@ -221,13 +221,13 @@ button, input, textarea, select {
 
 /* Custom radio and checkbox styles */
 .custom-radio:checked {
-  background-color: #10b981;
-  border-color: #10b981;
+  background-color: #f97316;
+  border-color: #f97316;
 }
 
 .custom-checkbox:checked {
-  background-color: #10b981;
-  border-color: #10b981;
+  background-color: #f97316;
+  border-color: #f97316;
 }
 
 /* Responsive design helpers */
