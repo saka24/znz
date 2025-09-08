@@ -473,98 +473,100 @@ function App() {
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1">
-          <TabsContent value="chats" className="p-0 m-0">
-            <div className="space-y-1 p-2">
-              {chats.map((chat) => (
-                <Card 
-                  key={chat.id} 
-                  className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-                    activeChat?.id === chat.id ? 'bg-emerald-50 border-emerald-200' : ''
-                  }`}
-                  onClick={() => setActiveChat(chat)}
-                >
-                  <CardContent className="p-3">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-teal-100 text-teal-700">
-                          {chat.name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">
-                          {chat.name}
-                        </p>
-                        <p className="text-sm text-gray-500 truncate">
-                          {chat.last_message || 'No messages yet'}
-                        </p>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(chat.last_activity).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="friends" className="p-0 m-0">
-            <div className="p-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full mb-4" variant="outline">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Add Friend
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Friend</DialogTitle>
-                  </DialogHeader>
-                  <Input placeholder="Enter username" />
-                  <Button className="bg-emerald-600 hover:bg-emerald-700">
-                    Send Friend Request
-                  </Button>
-                </DialogContent>
-              </Dialog>
-              
-              <div className="space-y-2">
-                {friends.map((friend) => (
-                  <Card key={friend.id} className="cursor-pointer hover:bg-gray-50">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <ScrollArea className="flex-1">
+            <TabsContent value="chats" className="p-0 m-0">
+              <div className="space-y-1 p-2">
+                {chats.map((chat) => (
+                  <Card 
+                    key={chat.id} 
+                    className={`cursor-pointer transition-colors hover:bg-gray-50 ${
+                      activeChat?.id === chat.id ? 'bg-emerald-50 border-emerald-200' : ''
+                    }`}
+                    onClick={() => setActiveChat(chat)}
+                  >
                     <CardContent className="p-3">
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarFallback className="bg-cyan-100 text-cyan-700">
-                            {friend.display_name[0]}
+                          <AvatarFallback className="bg-teal-100 text-teal-700">
+                            {chat.name[0]}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {friend.display_name}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate">
+                            {chat.name}
                           </p>
-                          <p className="text-sm text-gray-500">
-                            @{friend.username}
+                          <p className="text-sm text-gray-500 truncate">
+                            {chat.last_message || 'No messages yet'}
                           </p>
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {new Date(chat.last_activity).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="moments" className="p-0 m-0">
-            <div className="p-4 text-center text-gray-500">
-              <Star className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>Moments feature coming soon!</p>
-            </div>
-          </TabsContent>
-        </ScrollArea>
+            <TabsContent value="friends" className="p-0 m-0">
+              <div className="p-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="w-full mb-4" variant="outline">
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Add Friend
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Friend</DialogTitle>
+                    </DialogHeader>
+                    <Input placeholder="Enter username" />
+                    <Button className="bg-emerald-600 hover:bg-emerald-700">
+                      Send Friend Request
+                    </Button>
+                  </DialogContent>
+                </Dialog>
+                
+                <div className="space-y-2">
+                  {friends.map((friend) => (
+                    <Card key={friend.id} className="cursor-pointer hover:bg-gray-50">
+                      <CardContent className="p-3">
+                        <div className="flex items-center space-x-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="bg-cyan-100 text-cyan-700">
+                              {friend.display_name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {friend.display_name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              @{friend.username}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="moments" className="p-0 m-0">
+              <div className="p-4 text-center text-gray-500">
+                <Star className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                <p>Moments feature coming soon!</p>
+              </div>
+            </TabsContent>
+          </ScrollArea>
+        </Tabs>
       </div>
 
       {/* Main Chat Area */}
