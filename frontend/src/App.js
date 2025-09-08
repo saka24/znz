@@ -764,7 +764,7 @@ function App() {
                 
                 <Button 
                   onClick={sendMessage}
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-orange-600 hover:bg-orange-700"
                   disabled={!newMessage.trim()}
                 >
                   <Send className="h-4 w-4" />
