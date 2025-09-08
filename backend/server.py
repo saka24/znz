@@ -293,7 +293,14 @@ async def get_chat_messages(chat_id: str, current_user: str = Depends(get_curren
         raise HTTPException(status_code=403, detail="Access denied")
     
     messages = await db.messages.find({"chat_id": chat_id}).sort("timestamp", 1).to_list(100)
-    return messages
+    
+    # Convert MongoDB documents to proper format
+    return [
+        {
+            **message,
+            "_id": str(message["_id"]) if "_id" in message else None
+        } for message in messages
+    ]
 
 # AI endpoints
 @app.post("/api/ai/suggestions")
