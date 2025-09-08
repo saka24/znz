@@ -323,7 +323,13 @@ async def get_friends(current_user: str = Depends(get_current_user)):
         {"password_hash": 0}
     ).to_list(100)
     
-    return friends_data
+    # Convert MongoDB documents to proper format
+    return [
+        {
+            **friend,
+            "_id": str(friend["_id"]) if "_id" in friend else None
+        } for friend in friends_data
+    ]
 
 @app.post("/api/friends/add")
 async def add_friend(data: dict, current_user: str = Depends(get_current_user)):
