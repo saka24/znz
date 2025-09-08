@@ -391,7 +391,7 @@ function App() {
                   onChange={(e) => setRegisterForm({...registerForm, password: e.target.value})}
                 />
                 <Button 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  className="w-full bg-orange-600 hover:bg-orange-700"
                   onClick={() => register(registerForm)}
                 >
                   Create Account
