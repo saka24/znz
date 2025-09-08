@@ -92,9 +92,9 @@ body {
 
 /* Chat header gradient */
 .chat-header {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(20, 184, 166, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(234, 88, 12, 0.05) 100%);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.1);
 }
 
 /* Status indicators */
