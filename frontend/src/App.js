@@ -456,7 +456,7 @@ function App() {
             <button
               className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'friends' 
-                  ? 'bg-white text-emerald-600 shadow-sm' 
+                  ? 'bg-white text-orange-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               onClick={() => setActiveTab('friends')}
