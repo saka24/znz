@@ -354,7 +354,7 @@ function App() {
                 <p className="text-center text-sm text-gray-600">
                   Don't have an account?{' '}
                   <button 
-                    className="text-emerald-600 hover:underline"
+                    className="text-orange-600 hover:underline"
                     onClick={() => setShowLogin(false)}
                   >
                     Sign up
