@@ -1,5 +1,5 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background Circle with Gradient -->
+  <!-- Background Circle with Orange Gradient -->
   <circle cx="512" cy="512" r="512" fill="url(#background)"/>
   
   <!-- Main Chat Bubble -->
@@ -16,16 +16,16 @@
   <!-- SISI Text -->
   <text x="512" y="780" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="80" font-weight="bold">SISI</text>
   
-  <!-- Gradients -->
+  <!-- Orange Gradients -->
   <defs>
     <linearGradient id="background" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#14b8a6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ea580c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
     </linearGradient>
     <linearGradient id="bubbleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:0.6" />
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:0.6" />
     </linearGradient>
   </defs>
 </svg>
