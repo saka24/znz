@@ -346,7 +346,7 @@ function App() {
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                 />
                 <Button 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  className="w-full bg-orange-600 hover:bg-orange-700"
                   onClick={() => login(loginForm)}
                 >
                   Sign In
