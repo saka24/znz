@@ -545,7 +545,7 @@ function App() {
                     <DialogTitle>Add Friend</DialogTitle>
                   </DialogHeader>
                   <Input placeholder="Enter username" />
-                  <Button className="bg-emerald-600 hover:bg-emerald-700">
+                  <Button className="bg-orange-600 hover:bg-orange-700">
                     Send Friend Request
                   </Button>
                 </DialogContent>
