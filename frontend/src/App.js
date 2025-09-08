@@ -557,7 +557,7 @@ function App() {
                     <CardContent className="p-3">
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarFallback className="bg-cyan-100 text-cyan-700">
+                          <AvatarFallback className="bg-orange-100 text-orange-700">
                             {friend.display_name?.[0] || 'F'}
                           </AvatarFallback>
                         </Avatar>
