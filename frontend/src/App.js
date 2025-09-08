@@ -595,7 +595,7 @@ function App() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-teal-100 text-teal-700">
+                    <AvatarFallback className="bg-orange-100 text-orange-700">
                       {activeChat.name[0]}
                     </AvatarFallback>
                   </Avatar>
