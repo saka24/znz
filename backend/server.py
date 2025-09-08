@@ -390,7 +390,14 @@ async def get_payments(current_user: str = Depends(get_current_user)):
     payments = await db.payments.find(
         {"$or": [{"from_user": current_user}, {"to_user": current_user}]}
     ).to_list(100)
-    return payments
+    
+    # Convert MongoDB documents to proper format
+    return [
+        {
+            **payment,
+            "_id": str(payment["_id"]) if "_id" in payment else None
+        } for payment in payments
+    ]
 
 # WebSocket endpoint
 @app.websocket("/ws/{user_id}")
