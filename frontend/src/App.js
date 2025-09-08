@@ -323,7 +323,7 @@ function App() {
   // Authentication UI
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-center p-4">
         <Toaster position="top-right" />
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
