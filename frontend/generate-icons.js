@@ -38,7 +38,7 @@ const generateIcons = async () => {
     console.log(`Generating ${size}x${size} icon for ${dir}...`);
     
     await sharp(iconSvg)
-      .resize(size, SIZE)
+      .resize(size, size)
       .png()
       .toFile(path.join(androidDir, dir, 'ic_launcher.png'));
     
