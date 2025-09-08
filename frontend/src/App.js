@@ -634,7 +634,7 @@ function App() {
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
                         message.sender_id === user.id
-                          ? 'bg-emerald-500 text-white ml-auto'
+                          ? 'bg-orange-500 text-white ml-auto'
                           : 'bg-white border border-gray-200 text-gray-900'
                       }`}
                     >
