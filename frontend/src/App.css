@@ -243,7 +243,7 @@ button, input, textarea, select {
 
 /* Accessibility improvements */
 .focus-visible:focus {
-  outline: 2px solid #10b981;
+  outline: 2px solid #f97316;
   outline-offset: 2px;
 }
 
