@@ -866,6 +866,7 @@ async def refresh_notifications(current_user: str = Depends(get_current_user)):
     formatted_notifications = [
         {
             **notification,
+            "created_at": notification["created_at"].isoformat() if "created_at" in notification else None,
             "_id": str(notification["_id"]) if "_id" in notification else None
         } for notification in notifications
     ]
