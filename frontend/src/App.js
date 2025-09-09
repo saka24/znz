@@ -593,6 +593,7 @@ function App() {
             <div className="flex items-center space-x-2">
               <NotificationCenter 
                 user={user}
+                websocket={ws}
                 onAcceptFriend={handleAcceptFriend}
                 onDeclineFriend={handleDeclineFriend}
               />
