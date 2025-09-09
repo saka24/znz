@@ -784,6 +784,27 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                     "chat_id": message_data.get("chat_id"),
                     "is_typing": message_data.get("is_typing", False)
                 }, message_data.get("chat_id"))
+                
+            elif message_data.get("type") == "refresh_notifications":
+                # Refresh notifications for the user
+                notifications = await db.notifications.find(
+                    {"user_id": user_id}
+                ).sort("created_at", -1).limit(50).to_list(50)
+                
+                formatted_notifications = [
+                    {
+                        **notification,
+                        "_id": str(notification["_id"]) if "_id" in notification else None
+                    } for notification in notifications
+                ]
+                
+                await manager.send_personal_message(
+                    json.dumps({
+                        "type": "notifications_update",
+                        "notifications": formatted_notifications
+                    }),
+                    user_id
+                )
     
     except WebSocketDisconnect:
         manager.disconnect(user_id)
