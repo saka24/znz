@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { Button } from './components/ui/button';
+import PWAInstallBanner from './components/PWAInstallBanner';
 import { Input } from './components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Avatar, AvatarFallback } from './components/ui/avatar';
