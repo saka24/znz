@@ -101,7 +101,7 @@ function App() {
       // Initialize WebSocket
       initializeWebSocket(userData.id, access_token);
       
-      toast.success(`Welcome to WeChat Clone, ${userData.display_name}!`);
+      toast.success(`Welcome to SISI Chat, ${userData.display_name}!`);
     } catch (error) {
       toast.error('Registration failed. Please try again.');
     }
