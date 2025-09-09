@@ -293,31 +293,10 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
 
         {/* QR Code Tab */}
         {activeTab === 'qr' && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <div className="w-32 h-32 bg-gray-100 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                <QrCode className="h-16 w-16 text-gray-400" />
-              </div>
-              <p className="text-sm font-medium text-gray-900 mb-2">Your QR Code</p>
-              <p className="text-xs text-gray-600 mb-4">
-                Let others scan this code to add you as a friend
-              </p>
-              <Button variant="outline" className="mb-4">
-                <QrCode className="h-4 w-4 mr-2" />
-                Scan QR Code
-              </Button>
-            </div>
-            
-            <div className="bg-orange-50 rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                <span className="text-sm font-medium text-orange-900">Quick Add</span>
-              </div>
-              <p className="text-xs text-orange-700">
-                Share your username: <code className="bg-orange-100 px-1 rounded">@{currentUser?.username || 'username'}</code>
-              </p>
-            </div>
-          </div>
+          <QRCodeComponent 
+            currentUser={currentUser}
+            onAddFriend={addFriend}
+          />
         )}
       </DialogContent>
     </Dialog>
