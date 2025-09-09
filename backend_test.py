@@ -469,6 +469,27 @@ class WeChatCloneAPITester:
         # Get friends list (should be empty)
         self.test_get_friends()
         
+        # Test user search functionality
+        print("\n🔍 Testing User Search...")
+        search_success, search_response = self.test_user_search("test")
+        if search_success:
+            print(f"   ✅ Search returned {len(search_response)} results")
+        
+        # Test friend suggestions
+        print("\n💡 Testing Friend Suggestions...")
+        suggestions_success, suggestions_response = self.test_friend_suggestions()
+        if suggestions_success:
+            print(f"   ✅ Friend suggestions returned {len(suggestions_response)} suggestions")
+            # Check if suggestions have required fields
+            if suggestions_response:
+                first_suggestion = suggestions_response[0]
+                required_fields = ['id', 'username', 'display_name', 'mutual_friends']
+                missing_fields = [field for field in required_fields if field not in first_suggestion]
+                if not missing_fields:
+                    print("   ✅ Friend suggestions have all required fields")
+                else:
+                    print(f"   ❌ Friend suggestions missing fields: {missing_fields}")
+        
         # Test complete friend request flow (accept)
         friend_flow_success = self.test_friend_request_flow(user1_info, user2_info)
         
