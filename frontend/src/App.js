@@ -792,7 +792,7 @@ function App() {
             <div className="text-center">
               <MessageCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                Welcome to WeChat Clone
+                Welcome to SISI Chat
               </h3>
               <p className="text-gray-500">
                 Select a chat to start messaging or create a new conversation
