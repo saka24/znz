@@ -182,6 +182,182 @@ class WeChatCloneAPITester:
         success, response = self.run_test(f"Add Friend ({friend_username})", "POST", "friends/add", 200, data=friend_data)
         return success, response
 
+    def test_accept_friend_request(self, from_user_id):
+        """Test accepting a friend request"""
+        accept_data = {
+            "userId": from_user_id,
+            "from_user_id": from_user_id
+        }
+        
+        success, response = self.run_test(f"Accept Friend Request ({from_user_id})", "POST", "friends/accept", 200, data=accept_data)
+        return success, response
+
+    def test_decline_friend_request(self, from_user_id):
+        """Test declining a friend request"""
+        decline_data = {
+            "userId": from_user_id,
+            "from_user_id": from_user_id
+        }
+        
+        success, response = self.run_test(f"Decline Friend Request ({from_user_id})", "POST", "friends/decline", 200, data=decline_data)
+        return success, response
+
+    def test_get_notifications(self):
+        """Test getting user notifications"""
+        success, response = self.run_test("Get Notifications", "GET", "notifications", 200)
+        return success, response
+
+    def test_friend_request_flow(self, user1_info, user2_info):
+        """Test complete friend request flow"""
+        print("\n🤝 Testing Complete Friend Request Flow...")
+        
+        # Step 1: User1 sends friend request to User2
+        print(f"   Step 1: {user1_info['username']} sends friend request to {user2_info['username']}")
+        
+        # Login as user1
+        login_success, _ = self.test_user_login(user1_info['username'], user1_info['password'])
+        if not login_success:
+            return False
+        
+        # Send friend request
+        add_success, _ = self.test_add_friend(user2_info['username'])
+        if not add_success:
+            return False
+        
+        # Step 2: Login as User2 and check notifications
+        print(f"   Step 2: {user2_info['username']} checks notifications")
+        
+        login_success, _ = self.test_user_login(user2_info['username'], user2_info['password'])
+        if not login_success:
+            return False
+        
+        # Check notifications
+        notifications_success, notifications_response = self.test_get_notifications()
+        if not notifications_success:
+            return False
+        
+        # Find friend request notification
+        friend_request_notification = None
+        for notification in notifications_response:
+            if (notification.get('type') == 'friend_request' and 
+                notification.get('data', {}).get('from_user_id') == user1_info['user_data']['id']):
+                friend_request_notification = notification
+                break
+        
+        if not friend_request_notification:
+            print("   ❌ Friend request notification not found")
+            return False
+        
+        print(f"   ✅ Friend request notification found: {friend_request_notification.get('message', '')}")
+        
+        # Step 3: Accept friend request
+        print(f"   Step 3: {user2_info['username']} accepts friend request")
+        
+        accept_success, _ = self.test_accept_friend_request(user1_info['user_data']['id'])
+        if not accept_success:
+            return False
+        
+        # Step 4: Verify friends list updated
+        print("   Step 4: Verifying friends list updated")
+        
+        friends_success, friends_response = self.test_get_friends()
+        if not friends_success:
+            return False
+        
+        # Check if user1 is now in user2's friends list
+        user1_in_friends = any(
+            friend.get('id') == user1_info['user_data']['id'] or 
+            friend.get('username') == user1_info['username']
+            for friend in friends_response
+        )
+        
+        if user1_in_friends:
+            print(f"   ✅ {user1_info['username']} successfully added to {user2_info['username']}'s friends list")
+            return True
+        else:
+            print(f"   ❌ {user1_info['username']} not found in {user2_info['username']}'s friends list")
+            return False
+
+    def test_friend_request_decline_flow(self, user1_info, user2_info):
+        """Test friend request decline flow"""
+        print("\n❌ Testing Friend Request Decline Flow...")
+        
+        # Step 1: User1 sends friend request to User2
+        print(f"   Step 1: {user1_info['username']} sends friend request to {user2_info['username']}")
+        
+        # Login as user1
+        login_success, _ = self.test_user_login(user1_info['username'], user1_info['password'])
+        if not login_success:
+            return False
+        
+        # Send friend request
+        add_success, _ = self.test_add_friend(user2_info['username'])
+        if not add_success:
+            return False
+        
+        # Step 2: Login as User2 and decline
+        print(f"   Step 2: {user2_info['username']} declines friend request")
+        
+        login_success, _ = self.test_user_login(user2_info['username'], user2_info['password'])
+        if not login_success:
+            return False
+        
+        # Decline friend request
+        decline_success, _ = self.test_decline_friend_request(user1_info['user_data']['id'])
+        if not decline_success:
+            return False
+        
+        # Step 3: Verify friends list unchanged
+        print("   Step 3: Verifying friends list unchanged")
+        
+        friends_success, friends_response = self.test_get_friends()
+        if not friends_success:
+            return False
+        
+        # Check if user1 is NOT in user2's friends list
+        user1_in_friends = any(
+            friend.get('id') == user1_info['user_data']['id'] or 
+            friend.get('username') == user1_info['username']
+            for friend in friends_response
+        )
+        
+        if not user1_in_friends:
+            print(f"   ✅ {user1_info['username']} correctly not in {user2_info['username']}'s friends list after decline")
+            return True
+        else:
+            print(f"   ❌ {user1_info['username']} incorrectly found in {user2_info['username']}'s friends list after decline")
+            return False
+
+    def test_invalid_friend_requests(self):
+        """Test invalid friend request scenarios"""
+        print("\n⚠️  Testing Invalid Friend Request Scenarios...")
+        
+        # Test accept with missing userId
+        print("   Testing accept with missing userId...")
+        success, _ = self.run_test("Accept Friend (Missing userId)", "POST", "friends/accept", 400, data={})
+        if success:
+            print("   ✅ Correctly rejected accept request with missing userId")
+        
+        # Test decline with missing userId  
+        print("   Testing decline with missing userId...")
+        success, _ = self.run_test("Decline Friend (Missing userId)", "POST", "friends/decline", 400, data={})
+        if success:
+            print("   ✅ Correctly rejected decline request with missing userId")
+        
+        # Test accept with invalid userId
+        print("   Testing accept with invalid userId...")
+        success, _ = self.run_test("Accept Friend (Invalid userId)", "POST", "friends/accept", 404, data={"userId": "invalid_user_id"})
+        if success:
+            print("   ✅ Correctly rejected accept request with invalid userId")
+        
+        # Test decline with invalid userId
+        print("   Testing decline with invalid userId...")
+        success, _ = self.run_test("Decline Friend (Invalid userId)", "POST", "friends/decline", 404, data={"userId": "invalid_user_id"})
+        if success:
+            print("   ✅ Correctly rejected decline request with invalid userId")
+        
+        return True
+
     def test_payment_request(self, to_user, amount=100.0, description="Test payment"):
         """Test sending payment request"""
         payment_data = {
