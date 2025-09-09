@@ -128,6 +128,11 @@ const AddFriendModal = ({ isOpen, onClose, currentUser, onFriendRequestSent }) =
       setSuggestedFriends(prev => prev.filter(f => f.id !== friendData.id));
       setSearchResults(prev => prev.filter(f => f.id !== friendData.id));
       
+      // Notify parent component to refresh notifications
+      if (onFriendRequestSent) {
+        onFriendRequestSent();
+      }
+      
       return true; // Return success for QR code handling
     } catch (error) {
       console.error('Add friend error:', error);
