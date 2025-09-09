@@ -449,11 +449,23 @@ class WeChatCloneAPITester:
         # Get friends list (should be empty)
         self.test_get_friends()
         
-        # Add user2 as friend of user1
-        self.test_add_friend(user2_info['username'])
+        # Test complete friend request flow (accept)
+        friend_flow_success = self.test_friend_request_flow(user1_info, user2_info)
         
-        # Get friends list again (should have user2)
-        self.test_get_friends()
+        # Test friend request decline flow with new users
+        user3_success, user3_info = self.test_user_registration(
+            f"testuser3_{timestamp}",
+            f"test3_{timestamp}@example.com",
+            "TestPass123!",
+            f"Test User 3 {timestamp}",
+            "+1234567892"
+        )
+        
+        if user3_success:
+            decline_flow_success = self.test_friend_request_decline_flow(user1_info, user3_info)
+        
+        # Test invalid friend request scenarios
+        self.test_invalid_friend_requests()
 
         # Test 9: Payment System
         print("\n💳 Testing Payment System...")
