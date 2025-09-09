@@ -80,33 +80,77 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   console.log('Push notification received:', event);
   
+  let notificationData = {
+    title: 'SISI Chat',
+    body: 'You have a new notification',
+    type: 'message'
+  };
+  
+  if (event.data) {
+    try {
+      notificationData = event.data.json();
+    } catch (e) {
+      notificationData.body = event.data.text();
+    }
+  }
+  
   const options = {
-    body: event.data ? event.data.text() : 'New message in SISI Chat',
+    body: notificationData.body,
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      type: notificationData.type,
+      ...notificationData.data
     },
-    actions: [
-      {
-        action: 'reply',
-        title: 'Reply',
-        icon: '/icons/icon-192x192.png'
-      },
-      {
-        action: 'close',
-        title: 'Close',
-        icon: '/icons/icon-192x192.png'
-      }
-    ]
+    actions: getNotificationActions(notificationData.type),
+    requireInteraction: notificationData.type === 'friend_request'
   };
   
   event.waitUntil(
-    self.registration.showNotification('SISI Chat', options)
+    self.registration.showNotification(notificationData.title, options)
   );
 });
+
+function getNotificationActions(type) {
+  switch (type) {
+    case 'friend_request':
+      return [
+        {
+          action: 'accept',
+          title: 'Accept',
+          icon: '/icons/icon-192x192.png'
+        },
+        {
+          action: 'decline',
+          title: 'Decline',
+          icon: '/icons/icon-192x192.png'
+        }
+      ];
+    case 'message':
+      return [
+        {
+          action: 'reply',
+          title: 'Reply',
+          icon: '/icons/icon-192x192.png'
+        },
+        {
+          action: 'view',
+          title: 'View',
+          icon: '/icons/icon-192x192.png'
+        }
+      ];
+    default:
+      return [
+        {
+          action: 'view',
+          title: 'View',
+          icon: '/icons/icon-192x192.png'
+        }
+      ];
+  }
+}
 
 // Notification click event
 self.addEventListener('notificationclick', (event) => {
