@@ -73,10 +73,11 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
   const handleFriendRequest = (notificationId, accept) => {
     const notification = notifications.find(n => n.id === notificationId);
     if (notification) {
+      const userId = notification.data.from_user_id || notification.data.userId;
       if (accept) {
-        onAcceptFriend?.(notification.data.userId);
+        onAcceptFriend?.(userId, notification.data);
       } else {
-        onDeclineFriend?.(notification.data.userId);
+        onDeclineFriend?.(userId, notification.data);
       }
       removeNotification(notificationId);
     }
