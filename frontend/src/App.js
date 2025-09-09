@@ -849,6 +849,13 @@ function App() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Add Friend Modal */}
+      <AddFriendModal 
+        isOpen={showAddFriendModal}
+        onClose={() => setShowAddFriendModal(false)}
+        currentUser={user}
+      />
     </div>
   );
 }
