@@ -9,6 +9,7 @@ import { Badge } from './ui/badge';
 import { Search, UserPlus, QrCode, Users, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import QRCodeComponent from './QRCodeComponent';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
