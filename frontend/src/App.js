@@ -100,8 +100,11 @@ function App() {
 
   const register = async (formData) => {
     try {
+      console.log('Attempting registration with:', { username: formData.username, email: formData.email });
       const response = await axios.post(`${API}/auth/register`, formData);
       const { access_token, user: userData } = response.data;
+      
+      console.log('Registration successful:', userData);
       
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -113,7 +116,9 @@ function App() {
       
       toast.success(`Welcome to SISI Chat, ${userData.display_name}!`);
     } catch (error) {
-      toast.error('Registration failed. Please try again.');
+      console.error('Registration error:', error);
+      const errorMessage = error.response?.data?.detail || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
