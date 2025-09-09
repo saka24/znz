@@ -127,8 +127,12 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
       // Remove from suggestions/results
       setSuggestedFriends(prev => prev.filter(f => f.id !== friendData.id));
       setSearchResults(prev => prev.filter(f => f.id !== friendData.id));
+      
+      return true; // Return success for QR code handling
     } catch (error) {
-      toast.error('Failed to send friend request');
+      console.error('Add friend error:', error);
+      toast.error(error.response?.data?.detail || 'Failed to send friend request');
+      return false;
     }
   };
 
