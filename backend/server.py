@@ -612,23 +612,38 @@ async def add_friend(data: dict, current_user: str = Depends(get_current_user)):
     
     await db.friends.insert_one(friend_request.dict())
     
+    # Get current user details once
+    current_user_data = await db.users.find_one({'id': current_user})
+    
     # Create notification for the target user
     notification = {
         "id": str(uuid.uuid4()),
         "user_id": friend_user["id"],
         "type": "friend_request",
         "title": "New Friend Request",
-        "message": f"{(await db.users.find_one({'id': current_user}))['display_name']} wants to be your friend",
+        "message": f"{current_user_data['display_name']} wants to be your friend",
         "read": False,
         "created_at": datetime.utcnow(),
         "data": {
             "from_user_id": current_user,
-            "from_username": (await db.users.find_one({'id': current_user}))['username'],
-            "from_display_name": (await db.users.find_one({'id': current_user}))['display_name']
+            "from_username": current_user_data['username'],
+            "from_display_name": current_user_data['display_name']
         }
     }
     
     await db.notifications.insert_one(notification)
+    
+    # Send real-time notification via WebSocket
+    await manager.send_personal_message(
+        json.dumps({
+            "type": "notification",
+            "notification": {
+                **notification,
+                "_id": str(notification.get("_id", ""))
+            }
+        }),
+        friend_user["id"]
+    )
     
     return {"message": "Friend request sent successfully"}
 
