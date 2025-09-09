@@ -111,6 +111,36 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
 
+class NewsPost(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    author_id: str
+    author_name: str
+    title: str
+    content: str
+    image_url: Optional[str] = None
+    category: str = "general"  # general, tech, sports, entertainment, etc.
+    likes: List[str] = []  # user IDs who liked
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Comment(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    post_id: str
+    author_id: str
+    author_name: str
+    content: str
+    likes: List[str] = []  # user IDs who liked
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CreateNewsPost(BaseModel):
+    title: str
+    content: str
+    image_url: Optional[str] = None
+    category: str = "general"
+
+class CreateComment(BaseModel):
+    content: str
+
 # WebSocket Connection Manager
 class ConnectionManager:
     def __init__(self):
