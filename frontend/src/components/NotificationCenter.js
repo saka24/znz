@@ -11,8 +11,24 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Mock notifications - in real app, these would come from backend
-  useEffect(() => {
+  // Load notifications from backend
+  const loadNotifications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${BACKEND_URL}/api/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setNotifications(response.data);
+      setUnreadCount(response.data.filter(n => !n.read).length);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+      // Fallback to mock notifications for demo
+      loadMockNotifications();
+    }
+  };
+
+  const loadMockNotifications = () => {
     const mockNotifications = [
       {
         id: '1',
