@@ -459,6 +459,46 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     except WebSocketDisconnect:
         manager.disconnect(user_id)
 
+# Notification endpoints
+@app.post("/api/notifications/subscribe")
+async def subscribe_to_notifications(data: dict, current_user: str = Depends(get_current_user)):
+    # Store push notification subscription
+    subscription_data = {
+        "user_id": current_user,
+        "subscription": data.get("subscription"),
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.push_subscriptions.update_one(
+        {"user_id": current_user},
+        {"$set": subscription_data},
+        upsert=True
+    )
+    
+    return {"message": "Subscription saved successfully"}
+
+@app.get("/api/notifications")
+async def get_notifications(current_user: str = Depends(get_current_user)):
+    # Get user notifications
+    notifications = await db.notifications.find(
+        {"user_id": current_user}
+    ).sort("created_at", -1).limit(50).to_list(50)
+    
+    return [
+        {
+            **notification,
+            "_id": str(notification["_id"]) if "_id" in notification else None
+        } for notification in notifications
+    ]
+
+@app.post("/api/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str, current_user: str = Depends(get_current_user)):
+    await db.notifications.update_one(
+        {"id": notification_id, "user_id": current_user},
+        {"$set": {"read": True, "read_at": datetime.utcnow()}}
+    )
+    return {"message": "Notification marked as read"}
+
 # Health check
 @app.get("/api/health")
 async def health_check():
