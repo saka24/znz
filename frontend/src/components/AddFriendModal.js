@@ -14,7 +14,7 @@ import QRCodeComponent from './QRCodeComponent';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
+const AddFriendModal = ({ isOpen, onClose, currentUser, onFriendRequestSent }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [suggestedFriends, setSuggestedFriends] = useState([]);
