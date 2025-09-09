@@ -178,6 +178,64 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 async def get_chat_by_id(chat_id: str) -> Optional[dict]:
     return await db.chats.find_one({"id": chat_id})
 
+def generate_reset_token() -> str:
+    return secrets.token_urlsafe(32)
+
+async def send_reset_email(email: str, token: str, user_name: str):
+    """
+    Send password reset email - Mock implementation
+    In production, integrate with SendGrid, AWS SES, or similar service
+    """
+    try:
+        # Mock email sending - replace with actual email service
+        print(f"=== PASSWORD RESET EMAIL ===")
+        print(f"To: {email}")
+        print(f"Subject: Reset your SISI Chat password")
+        print(f"")
+        print(f"Hi {user_name},")
+        print(f"")
+        print(f"You requested to reset your password for SISI Chat.")
+        print(f"Your reset token is: {token}")
+        print(f"")
+        print(f"Copy this token and paste it in the reset password form.")
+        print(f"This token will expire in 1 hour.")
+        print(f"")
+        print(f"If you didn't request this, please ignore this email.")
+        print(f"")
+        print(f"Best regards,")
+        print(f"SISI Chat Team")
+        print(f"===========================")
+        
+        # In production, use this structure with real email service:
+        """
+        # Example with SendGrid
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail
+        
+        message = Mail(
+            from_email='noreply@sisichat.com',
+            to_emails=email,
+            subject='Reset your SISI Chat password',
+            html_content=f'''
+            <h2>Reset your password</h2>
+            <p>Hi {user_name},</p>
+            <p>You requested to reset your password for SISI Chat.</p>
+            <p><strong>Reset Token: {token}</strong></p>
+            <p>Copy this token and paste it in the reset password form.</p>
+            <p>This token will expire in 1 hour.</p>
+            <p>If you didn't request this, please ignore this email.</p>
+            '''
+        )
+        
+        sg = SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        """
+        
+        return True
+    except Exception as e:
+        logging.error(f"Failed to send reset email: {e}")
+        return False
+
 # AI Integration for message suggestions and translation
 async def get_ai_suggestions(message: str, context: str = "") -> List[str]:
     try:
