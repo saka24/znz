@@ -21,34 +21,48 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [activeTab, setActiveTab] = useState('search'); // search, suggestions, qr
 
-  // Mock suggested friends - in real app, this would come from backend
+  // Load friend suggestions from backend
   useEffect(() => {
-    if (isOpen) {
-      const mockSuggestions = [
-        {
-          id: 'user1',
-          username: 'sarah_johnson',
-          display_name: 'Sarah Johnson',
-          mutual_friends: 3,
-          status: 'online'
-        },
-        {
-          id: 'user2', 
-          username: 'mike_chen',
-          display_name: 'Mike Chen',
-          mutual_friends: 1,
-          status: 'offline'
-        },
-        {
-          id: 'user3',
-          username: 'emma_wilson',
-          display_name: 'Emma Wilson',
-          mutual_friends: 5,
-          status: 'online'
+    const loadSuggestions = async () => {
+      if (isOpen) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`${API}/friends/suggestions`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setSuggestedFriends(response.data);
+        } catch (error) {
+          console.error('Failed to load friend suggestions:', error);
+          // Fallback to mock suggestions
+          const mockSuggestions = [
+            {
+              id: 'user1',
+              username: 'sarah_johnson',
+              display_name: 'Sarah Johnson',
+              mutual_friends: 3,
+              status: 'online'
+            },
+            {
+              id: 'user2', 
+              username: 'mike_chen',
+              display_name: 'Mike Chen',
+              mutual_friends: 1,
+              status: 'offline'
+            },
+            {
+              id: 'user3',
+              username: 'emma_wilson',
+              display_name: 'Emma Wilson',
+              mutual_friends: 5,
+              status: 'online'
+            }
+          ];
+          setSuggestedFriends(mockSuggestions);
         }
-      ];
-      setSuggestedFriends(mockSuggestions);
-    }
+      }
+    };
+
+    loadSuggestions();
   }, [isOpen]);
 
   // Search for users
