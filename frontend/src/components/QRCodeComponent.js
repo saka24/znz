@@ -44,14 +44,40 @@ const QRCodeComponent = ({ currentUser, onAddFriend }) => {
 
   const copyToClipboard = async () => {
     try {
-      const shareText = `Add me on SISI Chat! Username: @${currentUser?.username}`;
+      const baseUrl = window.location.origin;
+      const shareUrl = `${baseUrl}/add-friend?user=${encodeURIComponent(currentUser?.username)}&id=${encodeURIComponent(currentUser?.id)}&name=${encodeURIComponent(currentUser?.display_name)}`;
+      const shareText = `Add me on SISI Chat! ${shareUrl}`;
+      
       await navigator.clipboard.writeText(shareText);
       setIsCopied(true);
-      toast.success('Username copied to clipboard!');
+      toast.success('Link copied to clipboard!');
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
       console.error('Failed to copy:', error);
-      toast.error('Failed to copy username');
+      toast.error('Failed to copy link');
+    }
+  };
+
+  const shareProfile = async () => {
+    try {
+      const baseUrl = window.location.origin;
+      const shareUrl = `${baseUrl}/add-friend?user=${encodeURIComponent(currentUser?.username)}&id=${encodeURIComponent(currentUser?.id)}&name=${encodeURIComponent(currentUser?.display_name)}`;
+      
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Add me on SISI Chat!',
+          text: `Connect with me on SISI Chat`,
+          url: shareUrl
+        });
+        toast.success('Shared successfully!');
+      } else {
+        // Fallback to copy
+        await navigator.clipboard.writeText(`Add me on SISI Chat! ${shareUrl}`);
+        toast.success('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Failed to share:', error);
+      toast.error('Failed to share profile');
     }
   };
 
