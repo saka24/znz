@@ -344,6 +344,48 @@ function App() {
     }
   };
 
+  // Handle deep link for QR code friend adding
+  const handleDeepLink = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const friendUsername = urlParams.get('user');
+    const friendId = urlParams.get('id');
+    const friendName = urlParams.get('name');
+    
+    if (friendUsername && friendId && friendName && isAuthenticated) {
+      // Check if it's not the current user
+      if (friendId === user?.id) {
+        toast.info("You can't add yourself as a friend!");
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+      
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(`${API}/friends/add`, {
+          username: friendUsername
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        toast.success(`Friend request sent to ${friendName}!`);
+        loadFriends(); // Refresh friends list
+      } catch (error) {
+        console.error('Deep link friend add error:', error);
+        const errorMessage = error.response?.data?.detail || 'Failed to send friend request';
+        
+        if (errorMessage.includes('already exists')) {
+          toast.info(`You're already friends with ${friendName}!`);
+        } else {
+          toast.error(errorMessage);
+        }
+      }
+      
+      // Clean URL after processing
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  };
+
   // Effects
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -369,6 +411,13 @@ function App() {
       });
     }
   }, []);
+
+  // Handle deep link when authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      handleDeepLink();
+    }
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     if (isAuthenticated) {
