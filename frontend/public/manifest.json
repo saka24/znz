@@ -10,7 +10,7 @@
   "categories": ["social", "productivity", "communication"],
   "lang": "en",
   "dir": "ltr",
-  "scope": "/",
+  "scope": "https://www.sisichat.com/",
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
