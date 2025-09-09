@@ -28,10 +28,12 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
     setIsLoading(true);
     try {
-      await axios.post(`${API}/auth/forgot-password`, { email });
+      const response = await axios.post(`${API}/auth/forgot-password`, { email });
+      console.log('Forgot password response:', response.data);
       setStep('sent');
       toast.success('Password reset email sent! Check your inbox.');
     } catch (error) {
+      console.error('Forgot password error:', error);
       toast.error(error.response?.data?.detail || 'Failed to send reset email');
     } finally {
       setIsLoading(false);
