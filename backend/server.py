@@ -498,11 +498,88 @@ async def add_friend(data: dict, current_user: str = Depends(get_current_user)):
     friend_request = Friend(
         user_id=current_user,
         friend_id=friend_user["id"],
-        status="accepted"  # Auto-accept for now
+        status="pending"  # Send as pending request
     )
     
     await db.friends.insert_one(friend_request.dict())
-    return {"message": "Friend added successfully"}
+    
+    # Create notification for the target user
+    notification = {
+        "id": str(uuid.uuid4()),
+        "user_id": friend_user["id"],
+        "type": "friend_request",
+        "title": "New Friend Request",
+        "message": f"{(await db.users.find_one({'id': current_user}))['display_name']} wants to be your friend",
+        "read": False,
+        "created_at": datetime.utcnow(),
+        "data": {
+            "from_user_id": current_user,
+            "from_username": (await db.users.find_one({'id': current_user}))['username'],
+            "from_display_name": (await db.users.find_one({'id': current_user}))['display_name']
+        }
+    }
+    
+    await db.notifications.insert_one(notification)
+    
+    return {"message": "Friend request sent successfully"}
+
+@app.post("/api/friends/accept")
+async def accept_friend_request(data: dict, current_user: str = Depends(get_current_user)):
+    from_user_id = data.get("userId") or data.get("from_user_id")
+    
+    if not from_user_id:
+        raise HTTPException(status_code=400, detail="Missing user ID")
+    
+    # Find the pending friend request
+    friend_request = await db.friends.find_one({
+        "user_id": from_user_id,
+        "friend_id": current_user,
+        "status": "pending"
+    })
+    
+    if not friend_request:
+        raise HTTPException(status_code=404, detail="Friend request not found")
+    
+    # Update friend request status to accepted
+    await db.friends.update_one(
+        {"_id": friend_request["_id"]},
+        {"$set": {"status": "accepted", "accepted_at": datetime.utcnow()}}
+    )
+    
+    # Remove the notification
+    await db.notifications.delete_many({
+        "user_id": current_user,
+        "type": "friend_request",
+        "data.from_user_id": from_user_id
+    })
+    
+    return {"message": "Friend request accepted successfully"}
+
+@app.post("/api/friends/decline")
+async def decline_friend_request(data: dict, current_user: str = Depends(get_current_user)):
+    from_user_id = data.get("userId") or data.get("from_user_id")
+    
+    if not from_user_id:
+        raise HTTPException(status_code=400, detail="Missing user ID")
+    
+    # Find and delete the pending friend request
+    result = await db.friends.delete_one({
+        "user_id": from_user_id,
+        "friend_id": current_user,
+        "status": "pending"
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Friend request not found")
+    
+    # Remove the notification
+    await db.notifications.delete_many({
+        "user_id": current_user,
+        "type": "friend_request",
+        "data.from_user_id": from_user_id
+    })
+    
+    return {"message": "Friend request declined successfully"}
 
 # Payment mock endpoints
 @app.post("/api/payments/request")
