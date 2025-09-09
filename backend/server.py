@@ -828,6 +828,31 @@ async def mark_notification_read(notification_id: str, current_user: str = Depen
     )
     return {"message": "Notification marked as read"}
 
+@app.post("/api/notifications/refresh")
+async def refresh_notifications(current_user: str = Depends(get_current_user)):
+    # Trigger notification refresh for the user
+    notifications = await db.notifications.find(
+        {"user_id": current_user}
+    ).sort("created_at", -1).limit(50).to_list(50)
+    
+    formatted_notifications = [
+        {
+            **notification,
+            "_id": str(notification["_id"]) if "_id" in notification else None
+        } for notification in notifications
+    ]
+    
+    # Send via WebSocket
+    await manager.send_personal_message(
+        json.dumps({
+            "type": "notifications_update",
+            "notifications": formatted_notifications
+        }),
+        current_user
+    )
+    
+    return {"message": "Notifications refreshed", "count": len(formatted_notifications)}
+
 # Health check
 @app.get("/api/health")
 async def health_check():
