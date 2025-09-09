@@ -584,23 +584,13 @@ function App() {
 
           {activeTab === 'friends' && (
             <div className="p-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-full mb-4" variant="outline">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Add Friend
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Friend</DialogTitle>
-                  </DialogHeader>
-                  <Input placeholder="Enter username" />
-                  <Button className="bg-orange-600 hover:bg-orange-700">
-                    Send Friend Request
-                  </Button>
-                </DialogContent>
-              </Dialog>
+              <Button 
+                className="w-full mb-4 bg-orange-600 hover:bg-orange-700" 
+                onClick={() => setShowAddFriendModal(true)}
+              >
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add Friends
+              </Button>
               
               <div className="space-y-2">
                 {friends.map((friend) => (
