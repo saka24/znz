@@ -80,11 +80,44 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend, websocket }
     setUnreadCount(mockNotifications.filter(n => !n.read).length);
   };
 
+  // Initial load and real-time updates
   useEffect(() => {
     if (user) {
-      loadNotifications();
+      loadNotifications(true);
+      
+      // Set up periodic refresh (every 10 seconds)
+      const refreshInterval = setInterval(() => {
+        loadNotifications(false);
+      }, 10000);
+      
+      return () => clearInterval(refreshInterval);
     }
   }, [user]);
+
+  // Listen for WebSocket notifications
+  useEffect(() => {
+    if (websocket) {
+      const handleNotificationUpdate = (data) => {
+        if (data.type === 'notification' || data.type === 'friend_request') {
+          console.log('Real-time notification received:', data);
+          // Refresh notifications immediately
+          loadNotifications(false);
+        }
+      };
+
+      // Add WebSocket message listener
+      if (websocket.addEventListener) {
+        websocket.addEventListener('message', (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            handleNotificationUpdate(data);
+          } catch (e) {
+            // Ignore non-JSON messages
+          }
+        });
+      }
+    }
+  }, [websocket]);
 
   const markAsRead = (notificationId) => {
     setNotifications(prev => 
