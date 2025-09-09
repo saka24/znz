@@ -141,6 +141,79 @@ class CreateNewsPost(BaseModel):
 class CreateComment(BaseModel):
     content: str
 
+class Product(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    seller_id: str
+    seller_name: str
+    name: str
+    description: str
+    price: float
+    currency: str = "TZS"  # Tanzanian Shilling
+    category: str
+    images: List[str] = []  # Image URLs
+    stock_quantity: int = 1
+    condition: str = "new"  # new, used, refurbished
+    location: str
+    is_active: bool = True
+    tags: List[str] = []
+    views: int = 0
+    likes: List[str] = []  # user IDs who liked
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CreateProduct(BaseModel):
+    name: str
+    description: str
+    price: float
+    category: str
+    images: List[str] = []
+    stock_quantity: int = 1
+    condition: str = "new"
+    location: str
+    tags: List[str] = []
+
+class CartItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    product_id: str
+    quantity: int = 1
+    added_at: datetime = Field(default_factory=datetime.utcnow)
+
+class Order(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    buyer_id: str
+    buyer_name: str
+    seller_id: str
+    seller_name: str
+    products: List[dict]  # Product details with quantities
+    total_amount: float
+    currency: str = "TZS"
+    status: str = "pending"  # pending, paid, shipped, delivered, cancelled
+    payment_method: str = "tigo_pesa"
+    payment_reference: Optional[str] = None
+    shipping_address: dict
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class CreateOrder(BaseModel):
+    product_ids: List[str]
+    quantities: List[int]
+    shipping_address: dict
+    payment_method: str = "tigo_pesa"
+
+class PaymentTransaction(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    order_id: str
+    payer_id: str
+    payee_id: str
+    amount: float
+    currency: str = "TZS"
+    payment_method: str
+    status: str = "pending"  # pending, completed, failed, refunded
+    reference: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: Optional[datetime] = None
+
 # WebSocket Connection Manager
 class ConnectionManager:
     def __init__(self):
