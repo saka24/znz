@@ -219,7 +219,17 @@ const QRCodeComponent = ({ currentUser, onAddFriend }) => {
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
-                  <span>{isCopied ? 'Copied!' : 'Copy Username'}</span>
+                  <span>{isCopied ? 'Copied!' : 'Copy Link'}</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={shareProfile}
+                  className="flex items-center space-x-1"
+                >
+                  <QrCode className="h-4 w-4" />
+                  <span>Share</span>
                 </Button>
                 
                 <Button
