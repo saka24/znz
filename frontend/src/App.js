@@ -281,6 +281,32 @@ function App() {
     }
   };
 
+  // Friend request handlers
+  const handleAcceptFriend = async (userId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/friends/accept`, { userId }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Friend request accepted!');
+      loadFriends(); // Refresh friends list
+    } catch (error) {
+      toast.error('Failed to accept friend request');
+    }
+  };
+
+  const handleDeclineFriend = async (userId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/friends/decline`, { userId }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.info('Friend request declined');
+    } catch (error) {
+      toast.error('Failed to decline friend request');
+    }
+  };
+
   // Load friends
   const loadFriends = async () => {
     try {
