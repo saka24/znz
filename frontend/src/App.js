@@ -284,28 +284,40 @@ function App() {
   };
 
   // Friend request handlers
-  const handleAcceptFriend = async (userId) => {
+  const handleAcceptFriend = async (userId, notificationData) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/friends/accept`, { userId }, {
+      await axios.post(`${API}/friends/accept`, { 
+        userId: userId,
+        from_user_id: userId 
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Friend request accepted!');
+      
+      const friendName = notificationData?.from_display_name || 'Friend';
+      toast.success(`Friend request from ${friendName} accepted!`);
       loadFriends(); // Refresh friends list
     } catch (error) {
-      toast.error('Failed to accept friend request');
+      console.error('Accept friend error:', error);
+      toast.error(error.response?.data?.detail || 'Failed to accept friend request');
     }
   };
 
-  const handleDeclineFriend = async (userId) => {
+  const handleDeclineFriend = async (userId, notificationData) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API}/friends/decline`, { userId }, {
+      await axios.post(`${API}/friends/decline`, { 
+        userId: userId,
+        from_user_id: userId 
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.info('Friend request declined');
+      
+      const friendName = notificationData?.from_display_name || 'Friend';
+      toast.info(`Friend request from ${friendName} declined`);
     } catch (error) {
-      toast.error('Failed to decline friend request');
+      console.error('Decline friend error:', error);
+      toast.error(error.response?.data?.detail || 'Failed to decline friend request');
     }
   };
 
