@@ -480,9 +480,16 @@ function App() {
                 </Badge>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={logout}>
-              <Settings className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center space-x-2">
+              <NotificationCenter 
+                user={user}
+                onAcceptFriend={handleAcceptFriend}
+                onDeclineFriend={handleDeclineFriend}
+              />
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
           <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
