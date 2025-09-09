@@ -396,15 +396,23 @@ function App() {
                 >
                   Sign In
                 </Button>
-                <p className="text-center text-sm text-gray-600">
-                  Don't have an account?{' '}
+                <div className="text-center text-sm text-gray-600 space-y-2">
                   <button 
-                    className="text-orange-600 hover:underline"
-                    onClick={() => setShowLogin(false)}
+                    className="text-orange-600 hover:underline block mx-auto"
+                    onClick={() => setShowForgotPasswordModal(true)}
                   >
-                    Sign up
+                    Forgot password?
                   </button>
-                </p>
+                  <p>
+                    Don't have an account?{' '}
+                    <button 
+                      className="text-orange-600 hover:underline"
+                      onClick={() => setShowLogin(false)}
+                    >
+                      Sign up
+                    </button>
+                  </p>
+                </div>
               </div>
             ) : (
               <div className="space-y-4">
