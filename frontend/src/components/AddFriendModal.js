@@ -60,7 +60,16 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
 
       setIsSearching(true);
       try {
-        // Mock search results - replace with actual API call
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API}/users/search?q=${encodeURIComponent(searchQuery)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setSearchResults(response.data);
+        setIsSearching(false);
+      } catch (error) {
+        console.error('Search failed:', error);
+        // Fallback to mock results if API fails
         const mockResults = [
           {
             id: 'search1',
@@ -78,14 +87,10 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
           }
         ];
         
-        // Simulate API delay
         setTimeout(() => {
           setSearchResults(mockResults);
           setIsSearching(false);
         }, 500);
-      } catch (error) {
-        console.error('Search failed:', error);
-        setIsSearching(false);
       }
     };
 
