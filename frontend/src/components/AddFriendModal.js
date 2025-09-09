@@ -157,12 +157,24 @@ const AddFriendModal = ({ isOpen, onClose, currentUser }) => {
             </div>
             <p className="text-sm text-gray-500">@{user.username}</p>
             
-            {showMutualFriends && user.mutual_friends > 0 && (
-              <div className="flex items-center space-x-1 mt-1">
-                <Users className="h-3 w-3 text-gray-400" />
-                <span className="text-xs text-gray-500">
-                  {user.mutual_friends} mutual friends
-                </span>
+            {showMutualFriends && (
+              <div className="flex items-center justify-between mt-1">
+                {user.mutual_friends > 0 ? (
+                  <div className="flex items-center space-x-1">
+                    <Users className="h-3 w-3 text-gray-400" />
+                    <span className="text-xs text-gray-500">
+                      {user.mutual_friends} mutual friend{user.mutual_friends !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-gray-400">New user</span>
+                )}
+                
+                {user.suggestion_reason === 'mutual_friends' && (
+                  <Badge variant="secondary" className="text-xs">
+                    Suggested
+                  </Badge>
+                )}
               </div>
             )}
           </div>
