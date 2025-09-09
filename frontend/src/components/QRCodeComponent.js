@@ -90,32 +90,63 @@ const QRCodeComponent = ({ currentUser, onAddFriend }) => {
 
   const handleScanResult = async (data) => {
     try {
-      const scannedData = JSON.parse(data);
+      stopScanning();
       
-      if (scannedData.type === 'sisi_chat_user') {
-        stopScanning();
+      // Check if it's a SISI Chat deep link URL
+      if (data.includes('/add-friend?')) {
+        const url = new URL(data);
+        const username = url.searchParams.get('user');
+        const userId = url.searchParams.get('id');
+        const displayName = url.searchParams.get('name');
         
-        if (scannedData.id === currentUser?.id) {
+        if (userId === currentUser?.id) {
           toast.info("That's your own QR code!");
           return;
         }
         
-        // Add friend via QR code
-        const success = await onAddFriend({
-          id: scannedData.id,
-          username: scannedData.username,
-          display_name: scannedData.display_name
-        });
-        
-        if (success) {
-          toast.success(`Added ${scannedData.display_name} as friend!`);
+        if (username && userId && displayName) {
+          // Add friend via QR code
+          const success = await onAddFriend({
+            id: userId,
+            username: username,
+            display_name: displayName
+          });
+          
+          if (success) {
+            toast.success(`Added ${displayName} as friend!`);
+          }
+        } else {
+          toast.error('Invalid QR code data');
         }
       } else {
-        toast.error('Invalid SISI Chat QR code');
+        // Try legacy JSON format for backward compatibility
+        try {
+          const scannedData = JSON.parse(data);
+          if (scannedData.type === 'sisi_chat_user') {
+            if (scannedData.id === currentUser?.id) {
+              toast.info("That's your own QR code!");
+              return;
+            }
+            
+            const success = await onAddFriend({
+              id: scannedData.id,
+              username: scannedData.username,
+              display_name: scannedData.display_name
+            });
+            
+            if (success) {
+              toast.success(`Added ${scannedData.display_name} as friend!`);
+            }
+          } else {
+            toast.error('Invalid SISI Chat QR code');
+          }
+        } catch (jsonError) {
+          toast.error('Invalid QR code format');
+        }
       }
     } catch (error) {
-      console.error('Failed to parse QR code:', error);
-      toast.error('Invalid QR code format');
+      console.error('Failed to process QR code:', error);
+      toast.error('Failed to process QR code');
     }
   };
 
