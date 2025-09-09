@@ -436,16 +436,45 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Check if there's a pending friend request in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const pendingFriendName = urlParams.get('name');
+  const pendingFriendUsername = urlParams.get('user');
+
   // Authentication UI
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-center p-4">
         <Toaster position="top-right" />
+        
+        {/* QR Code Welcome Banner */}
+        {pendingFriendName && (
+          <div className="fixed top-4 inset-x-4 z-50">
+            <Card className="bg-orange-100 border-orange-300">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <p className="text-sm font-medium text-orange-900">
+                    🎉 {pendingFriendName} invited you to SISI Chat!
+                  </p>
+                  <p className="text-xs text-orange-700 mt-1">
+                    Sign up or log in to connect with @{pendingFriendUsername}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-orange-700">
-              {showLogin ? 'Welcome Back' : 'Join WeChat Clone'}
+              {showLogin ? 'Welcome Back' : 'Join SISI Chat'}
             </CardTitle>
+            {pendingFriendName && (
+              <p className="text-sm text-orange-600 mt-2">
+                Connect with {pendingFriendName} after signing up!
+              </p>
+            )}
           </CardHeader>
           <CardContent>
             {showLogin ? (
