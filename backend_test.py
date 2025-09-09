@@ -374,6 +374,26 @@ class WeChatCloneAPITester:
         success, response = self.run_test("Get Payments", "GET", "payments", 200)
         return success, response
 
+    def test_user_search(self, query="test"):
+        """Test user search functionality"""
+        success, response = self.run_test(
+            f"User Search (query: {query})",
+            "GET",
+            f"users/search?q={query}",
+            200
+        )
+        return success, response
+
+    def test_friend_suggestions(self):
+        """Test friend suggestions endpoint"""
+        success, response = self.run_test(
+            "Friend Suggestions",
+            "GET",
+            "friends/suggestions",
+            200
+        )
+        return success, response
+
     def run_comprehensive_test(self):
         """Run all tests in sequence"""
         print("🚀 Starting WeChat Clone API Comprehensive Testing")
