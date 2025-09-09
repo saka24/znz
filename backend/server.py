@@ -720,10 +720,12 @@ async def request_payment(data: dict, current_user: str = Depends(get_current_us
     await db.payments.insert_one(payment.dict())
     
     # Send payment request via WebSocket
+    payment_dict = payment.dict()
+    payment_dict["created_at"] = payment_dict["created_at"].isoformat()
     await manager.send_personal_message(
         json.dumps({
             "type": "payment_request",
-            "payment": payment.dict()
+            "payment": payment_dict
         }),
         data.get("to_user")
     )
