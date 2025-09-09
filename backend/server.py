@@ -431,6 +431,72 @@ async def search_users(q: str, current_user: str = Depends(get_current_user)):
     
     return search_results
 
+# Friend suggestions endpoint
+@app.get("/api/friends/suggestions")
+async def get_friend_suggestions(current_user: str = Depends(get_current_user)):
+    # Get current user's friends
+    current_friends = await db.friends.find({
+        "$or": [
+            {"user_id": current_user, "status": "accepted"},
+            {"friend_id": current_user, "status": "accepted"}
+        ]
+    }).to_list(100)
+    
+    friend_ids = set()
+    for friendship in current_friends:
+        if friendship["user_id"] == current_user:
+            friend_ids.add(friendship["friend_id"])
+        else:
+            friend_ids.add(friendship["user_id"])
+    
+    # Find users who are not already friends
+    all_users = await db.users.find({
+        "id": {"$ne": current_user}
+    }, {
+        "password_hash": 0
+    }).to_list(100)
+    
+    suggestions = []
+    for user in all_users:
+        if user["id"] not in friend_ids:
+            # Check if there's a pending friend request
+            pending_request = await db.friends.find_one({
+                "$or": [
+                    {"user_id": current_user, "friend_id": user["id"], "status": "pending"},
+                    {"user_id": user["id"], "friend_id": current_user, "status": "pending"}
+                ]
+            })
+            
+            if not pending_request:
+                # Calculate mutual friends
+                user_friends = await db.friends.find({
+                    "$or": [
+                        {"user_id": user["id"], "status": "accepted"},
+                        {"friend_id": user["id"], "status": "accepted"}
+                    ]
+                }).to_list(100)
+                
+                user_friend_ids = set()
+                for friendship in user_friends:
+                    if friendship["user_id"] == user["id"]:
+                        user_friend_ids.add(friendship["friend_id"])
+                    else:
+                        user_friend_ids.add(friendship["user_id"])
+                
+                mutual_friends = len(friend_ids.intersection(user_friend_ids))
+                
+                suggestions.append({
+                    **user,
+                    "_id": str(user["_id"]) if "_id" in user else None,
+                    "mutual_friends": mutual_friends,
+                    "status": "online" if user.get("status") == "online" else "offline",
+                    "suggestion_reason": "mutual_friends" if mutual_friends > 0 else "new_user"
+                })
+    
+    # Sort by mutual friends count (descending) and take top 10
+    suggestions.sort(key=lambda x: x["mutual_friends"], reverse=True)
+    return suggestions[:10]
+
 # Chat endpoints
 @app.get("/api/chats")
 async def get_user_chats(current_user: str = Depends(get_current_user)):
