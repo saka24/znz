@@ -985,6 +985,234 @@ async def refresh_notifications(current_user: str = Depends(get_current_user)):
     
     return {"message": "Notifications refreshed", "count": len(formatted_notifications)}
 
+# News endpoints
+@app.get("/api/news")
+async def get_news():
+    news_posts = await db.news.find({}).sort("created_at", -1).limit(50).to_list(50)
+    return [
+        {
+            **post,
+            "_id": str(post["_id"]) if "_id" in post else None,
+            "created_at": post["created_at"].isoformat() if "created_at" in post else None
+        } for post in news_posts
+    ]
+
+@app.post("/api/news")
+async def create_news_post(post_data: CreateNewsPost, current_user: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user})
+    
+    news_post = NewsPost(
+        author_id=current_user,
+        author_name=user["display_name"],
+        title=post_data.title,
+        content=post_data.content,
+        image_url=post_data.image_url,
+        category=post_data.category
+    )
+    
+    await db.news.insert_one(news_post.dict())
+    return {"message": "News post created successfully", "post": news_post.dict()}
+
+@app.get("/api/news/{post_id}/comments")
+async def get_comments(post_id: str):
+    comments = await db.comments.find({"post_id": post_id}).sort("created_at", 1).to_list(100)
+    return [
+        {
+            **comment,
+            "_id": str(comment["_id"]) if "_id" in comment else None,
+            "created_at": comment["created_at"].isoformat() if "created_at" in comment else None
+        } for comment in comments
+    ]
+
+@app.post("/api/news/{post_id}/comments")
+async def create_comment(post_id: str, comment_data: CreateComment, current_user: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user})
+    
+    comment = Comment(
+        post_id=post_id,
+        author_id=current_user,
+        author_name=user["display_name"],
+        content=comment_data.content
+    )
+    
+    await db.comments.insert_one(comment.dict())
+    return {"message": "Comment created successfully", "comment": comment.dict()}
+
+# Marketplace endpoints
+@app.get("/api/products")
+async def get_products(category: str = None, search: str = None):
+    query = {"is_active": True}
+    if category:
+        query["category"] = category
+    if search:
+        query["$or"] = [
+            {"name": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}},
+            {"tags": {"$in": [search]}}
+        ]
+    
+    products = await db.products.find(query).sort("created_at", -1).limit(50).to_list(50)
+    return [
+        {
+            **product,
+            "_id": str(product["_id"]) if "_id" in product else None,
+            "created_at": product["created_at"].isoformat() if "created_at" in product else None
+        } for product in products
+    ]
+
+@app.post("/api/products")
+async def create_product(product_data: CreateProduct, current_user: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user})
+    
+    product = Product(
+        seller_id=current_user,
+        seller_name=user["display_name"],
+        name=product_data.name,
+        description=product_data.description,
+        price=product_data.price,
+        category=product_data.category,
+        images=product_data.images,
+        stock_quantity=product_data.stock_quantity,
+        condition=product_data.condition,
+        location=product_data.location,
+        tags=product_data.tags
+    )
+    
+    await db.products.insert_one(product.dict())
+    return {"message": "Product created successfully", "product": product.dict()}
+
+@app.post("/api/products/{product_id}/like")
+async def like_product(product_id: str, current_user: str = Depends(get_current_user)):
+    product = await db.products.find_one({"id": product_id})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    likes = product.get("likes", [])
+    if current_user in likes:
+        likes.remove(current_user)
+        action = "unliked"
+    else:
+        likes.append(current_user)
+        action = "liked"
+    
+    await db.products.update_one(
+        {"id": product_id},
+        {"$set": {"likes": likes}}
+    )
+    
+    return {"message": f"Product {action}", "likes_count": len(likes)}
+
+@app.post("/api/cart/add")
+async def add_to_cart(data: dict, current_user: str = Depends(get_current_user)):
+    product_id = data.get("product_id")
+    quantity = data.get("quantity", 1)
+    
+    # Check if product exists
+    product = await db.products.find_one({"id": product_id})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Check if already in cart
+    existing_item = await db.cart.find_one({"user_id": current_user, "product_id": product_id})
+    if existing_item:
+        await db.cart.update_one(
+            {"user_id": current_user, "product_id": product_id},
+            {"$inc": {"quantity": quantity}}
+        )
+    else:
+        cart_item = CartItem(
+            user_id=current_user,
+            product_id=product_id,
+            quantity=quantity
+        )
+        await db.cart.insert_one(cart_item.dict())
+    
+    return {"message": "Product added to cart"}
+
+@app.get("/api/cart")
+async def get_cart(current_user: str = Depends(get_current_user)):
+    cart_items = await db.cart.find({"user_id": current_user}).to_list(100)
+    
+    # Get product details for each cart item
+    enriched_items = []
+    for item in cart_items:
+        product = await db.products.find_one({"id": item["product_id"]})
+        if product:
+            enriched_items.append({
+                **item,
+                "_id": str(item["_id"]) if "_id" in item else None,
+                "product": {
+                    **product,
+                    "_id": str(product["_id"]) if "_id" in product else None
+                }
+            })
+    
+    return enriched_items
+
+@app.post("/api/orders")
+async def create_order(order_data: CreateOrder, current_user: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user})
+    
+    # Get products and calculate total
+    products = []
+    total_amount = 0
+    
+    for i, product_id in enumerate(order_data.product_ids):
+        product = await db.products.find_one({"id": product_id})
+        if not product:
+            raise HTTPException(status_code=404, detail=f"Product {product_id} not found")
+        
+        quantity = order_data.quantities[i] if i < len(order_data.quantities) else 1
+        products.append({
+            "product_id": product_id,
+            "name": product["name"],
+            "price": product["price"],
+            "quantity": quantity,
+            "subtotal": product["price"] * quantity
+        })
+        total_amount += product["price"] * quantity
+    
+    # Create order
+    order = Order(
+        buyer_id=current_user,
+        buyer_name=user["display_name"],
+        seller_id=products[0]["product_id"],  # Simplified - assumes single seller
+        seller_name="Seller",  # Would get from product
+        products=products,
+        total_amount=total_amount,
+        payment_method=order_data.payment_method,
+        shipping_address=order_data.shipping_address
+    )
+    
+    await db.orders.insert_one(order.dict())
+    
+    # Create payment transaction
+    payment = PaymentTransaction(
+        order_id=order.id,
+        payer_id=current_user,
+        payee_id=products[0]["product_id"],  # Simplified
+        amount=total_amount,
+        payment_method=order_data.payment_method
+    )
+    
+    await db.payments.insert_one(payment.dict())
+    
+    return {"message": "Order created successfully", "order": order.dict()}
+
+@app.get("/api/orders")
+async def get_orders(current_user: str = Depends(get_current_user)):
+    orders = await db.orders.find({
+        "$or": [{"buyer_id": current_user}, {"seller_id": current_user}]
+    }).sort("created_at", -1).to_list(100)
+    
+    return [
+        {
+            **order,
+            "_id": str(order["_id"]) if "_id" in order else None,
+            "created_at": order["created_at"].isoformat() if "created_at" in order else None
+        } for order in orders
+    ]
+
 # Health check
 @app.get("/api/health")
 async def health_check():
