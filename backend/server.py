@@ -329,6 +329,65 @@ async def login_user(user_data: UserLogin):
         }
     }
 
+@app.post("/api/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    # Find user by email
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        # Don't reveal if email exists or not for security
+        return {"message": "If your email is registered, you will receive a reset link"}
+    
+    # Generate reset token
+    reset_token = generate_reset_token()
+    expires_at = datetime.utcnow() + timedelta(hours=1)  # Token expires in 1 hour
+    
+    # Store reset token in database
+    await db.password_resets.insert_one({
+        "user_id": user["id"],
+        "email": user["email"],
+        "token": reset_token,
+        "expires_at": expires_at,
+        "used": False,
+        "created_at": datetime.utcnow()
+    })
+    
+    # Send reset email
+    email_sent = await send_reset_email(user["email"], reset_token, user["display_name"])
+    
+    if not email_sent:
+        raise HTTPException(status_code=500, detail="Failed to send reset email")
+    
+    return {"message": "Password reset email sent successfully"}
+
+@app.post("/api/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    # Find valid reset token
+    reset_record = await db.password_resets.find_one({
+        "token": request.token,
+        "used": False,
+        "expires_at": {"$gt": datetime.utcnow()}
+    })
+    
+    if not reset_record:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Hash new password
+    new_password_hash = hash_password(request.new_password)
+    
+    # Update user password
+    await db.users.update_one(
+        {"id": reset_record["user_id"]},
+        {"$set": {"password_hash": new_password_hash, "updated_at": datetime.utcnow()}}
+    )
+    
+    # Mark token as used
+    await db.password_resets.update_one(
+        {"_id": reset_record["_id"]},
+        {"$set": {"used": True, "used_at": datetime.utcnow()}}
+    )
+    
+    return {"message": "Password reset successfully"}
+
 # Chat endpoints
 @app.get("/api/chats")
 async def get_user_chats(current_user: str = Depends(get_current_user)):
