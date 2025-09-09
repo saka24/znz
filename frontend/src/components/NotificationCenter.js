@@ -98,10 +98,16 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend, websocket }
   useEffect(() => {
     if (websocket) {
       const handleNotificationUpdate = (data) => {
+        console.log('WebSocket message received:', data);
+        
         if (data.type === 'notification' || data.type === 'friend_request') {
           console.log('Real-time notification received:', data);
           // Refresh notifications immediately
           loadNotifications(false);
+        } else if (data.type === 'notifications_update') {
+          console.log('Notifications bulk update received:', data.notifications);
+          setNotifications(data.notifications);
+          setUnreadCount(data.notifications.filter(n => !n.read).length);
         }
       };
 
