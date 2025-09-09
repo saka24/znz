@@ -9,10 +9,11 @@ import { Separator } from './ui/separator';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
+const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend, websocket }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load notifications from backend
   const loadNotifications = async () => {
