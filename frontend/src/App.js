@@ -4,6 +4,7 @@ import { Button } from './components/ui/button';
 import PWAInstallBanner from './components/PWAInstallBanner';
 import NotificationCenter from './components/NotificationCenter';
 import AddFriendModal from './components/AddFriendModal';
+import ForgotPasswordModal from './components/ForgotPasswordModal';
 import { Input } from './components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Avatar, AvatarFallback } from './components/ui/avatar';
