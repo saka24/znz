@@ -966,6 +966,14 @@ function App() {
         isOpen={showAddFriendModal}
         onClose={() => setShowAddFriendModal(false)}
         currentUser={user}
+        onFriendRequestSent={() => {
+          // Trigger notification refresh
+          if (ws) {
+            ws.send(JSON.stringify({
+              type: 'refresh_notifications'
+            }));
+          }
+        }}
       />
 
       {/* Forgot Password Modal */}
