@@ -68,6 +68,7 @@ function App() {
   const [translatedText, setTranslatedText] = useState('');
   const [paymentData, setPaymentData] = useState({ amount: '', description: '' });
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   
   const messagesEndRef = useRef(null);
   const messageInputRef = useRef(null);
