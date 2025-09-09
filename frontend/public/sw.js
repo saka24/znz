@@ -184,6 +184,25 @@ self.addEventListener('notificationclick', (event) => {
   }
 });
 
+// Handle deep link navigation for QR codes
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'NAVIGATE_TO') {
+    const url = event.data.url;
+    event.waitUntil(
+      clients.matchAll().then((clientList) => {
+        if (clientList.length > 0) {
+          // If app is already open, navigate to the URL
+          clientList[0].navigate(url);
+          return clientList[0].focus();
+        } else {
+          // If app is not open, open it with the URL
+          return clients.openWindow(url);
+        }
+      })
+    );
+  }
+});
+
 // Background sync for offline message sending
 self.addEventListener('sync', (event) => {
   if (event.tag === 'background-sync') {
