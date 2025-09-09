@@ -389,6 +389,48 @@ async def reset_password(request: ResetPasswordRequest):
     
     return {"message": "Password reset successfully"}
 
+# User search endpoint
+@app.get("/api/users/search")
+async def search_users(q: str, current_user: str = Depends(get_current_user)):
+    if len(q) < 2:
+        return []
+    
+    # Search for users by username or display name
+    users = await db.users.find({
+        "$and": [
+            {"id": {"$ne": current_user}},  # Exclude current user
+            {
+                "$or": [
+                    {"username": {"$regex": q, "$options": "i"}},
+                    {"display_name": {"$regex": q, "$options": "i"}}
+                ]
+            }
+        ]
+    }, {
+        "password_hash": 0  # Exclude password hash
+    }).limit(10).to_list(10)
+    
+    # Convert MongoDB documents to proper format
+    search_results = []
+    for user in users:
+        # Check if already friends
+        existing_friendship = await db.friends.find_one({
+            "$or": [
+                {"user_id": current_user, "friend_id": user["id"]},
+                {"user_id": user["id"], "friend_id": current_user}
+            ]
+        })
+        
+        search_results.append({
+            **user,
+            "_id": str(user["_id"]) if "_id" in user else None,
+            "mutual_friends": 0,  # Could calculate this later
+            "is_friend": existing_friendship is not None,
+            "friend_status": existing_friendship["status"] if existing_friendship else None
+        })
+    
+    return search_results
+
 # Chat endpoints
 @app.get("/api/chats")
 async def get_user_chats(current_user: str = Depends(get_current_user)):
