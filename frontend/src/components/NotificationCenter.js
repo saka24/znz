@@ -21,7 +21,13 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
         message: 'John Doe wants to be your friend',
         timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
         read: false,
-        data: { userId: 'user123', userName: 'John Doe', userAvatar: 'JD' }
+        data: { 
+          from_user_id: 'user123', 
+          userId: 'user123', // Keep both for compatibility
+          from_username: 'john_doe',
+          from_display_name: 'John Doe', 
+          userAvatar: 'JD' 
+        }
       },
       {
         id: '2',
