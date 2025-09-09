@@ -91,16 +91,22 @@
       ]
     },
     {
-      "name": "Friends",
-      "short_name": "Friends", 
-      "description": "View friends list",
-      "url": "/friends",
+      "name": "Add Friend",
+      "short_name": "Add Friend", 
+      "description": "Add a new friend",
+      "url": "/add-friend",
       "icons": [
         {
           "src": "/icons/icon-192x192.png",
           "sizes": "192x192"
         }
       ]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+sisichat",
+      "url": "/add-friend?user=%s"
     }
   ],
   "related_applications": [],
