@@ -14,6 +14,10 @@ import uuid
 import asyncio
 import logging
 from pathlib import Path
+import secrets
+import smtplib
+from email.mime.text import MimeText
+from email.mime.multipart import MimeMultipart
 
 # Load environment variables
 ROOT_DIR = Path(__file__).parent
