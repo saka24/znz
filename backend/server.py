@@ -634,13 +634,15 @@ async def add_friend(data: dict, current_user: str = Depends(get_current_user)):
     await db.notifications.insert_one(notification)
     
     # Send real-time notification via WebSocket
+    notification_for_ws = {
+        **notification,
+        "created_at": notification["created_at"].isoformat(),
+        "_id": str(notification.get("_id", ""))
+    }
     await manager.send_personal_message(
         json.dumps({
             "type": "notification",
-            "notification": {
-                **notification,
-                "_id": str(notification.get("_id", ""))
-            }
+            "notification": notification_for_ws
         }),
         friend_user["id"]
     )
