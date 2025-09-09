@@ -2,7 +2,7 @@
   "name": "SISI Chat - Smart Messaging",
   "short_name": "SISI Chat",
   "description": "Smart messaging app with AI-powered features, real-time chat, translation, and secure payments",
-  "start_url": "/",
+  "start_url": "https://www.sisichat.com/",
   "display": "standalone",
   "background_color": "#f97316",
   "theme_color": "#f97316",
