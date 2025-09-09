@@ -67,7 +67,13 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
 
     setNotifications(mockNotifications);
     setUnreadCount(mockNotifications.filter(n => !n.read).length);
-  }, []);
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadNotifications();
+    }
+  }, [user]);
 
   const markAsRead = (notificationId) => {
     setNotifications(prev => 
