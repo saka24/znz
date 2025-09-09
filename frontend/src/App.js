@@ -866,6 +866,12 @@ function App() {
         onClose={() => setShowAddFriendModal(false)}
         currentUser={user}
       />
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal 
+        isOpen={showForgotPasswordModal}
+        onClose={() => setShowForgotPasswordModal(false)}
+      />
     </div>
   );
 }
