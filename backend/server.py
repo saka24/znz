@@ -775,9 +775,11 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                 )
                 
                 # Send to all chat participants
+                message_dict = message.dict()
+                message_dict["timestamp"] = message_dict["timestamp"].isoformat()
                 await manager.send_to_chat({
                     "type": "new_message",
-                    "message": message.dict()
+                    "message": message_dict
                 }, message.chat_id)
                 
             elif message_data.get("type") == "typing":
