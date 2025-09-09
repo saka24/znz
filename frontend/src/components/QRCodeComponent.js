@@ -18,16 +18,11 @@ const QRCodeComponent = ({ currentUser, onAddFriend }) => {
     if (currentUser) {
       const generateQRCode = async () => {
         try {
-          const userProfile = {
-            type: 'sisi_chat_user',
-            id: currentUser.id,
-            username: currentUser.username,
-            display_name: currentUser.display_name,
-            version: '1.0'
-          };
+          // Create deep link URL that opens directly in SISI Chat
+          const baseUrl = window.location.origin;
+          const deepLinkUrl = `${baseUrl}/add-friend?user=${encodeURIComponent(currentUser.username)}&id=${encodeURIComponent(currentUser.id)}&name=${encodeURIComponent(currentUser.display_name)}`;
           
-          const qrData = JSON.stringify(userProfile);
-          const dataURL = await QRCode.toDataURL(qrData, {
+          const dataURL = await QRCode.toDataURL(deepLinkUrl, {
             width: 256,
             margin: 2,
             color: {
