@@ -76,8 +76,11 @@ function App() {
   // Authentication functions
   const login = async (formData) => {
     try {
+      console.log('Attempting login with:', { username: formData.username });
       const response = await axios.post(`${API}/auth/login`, formData);
       const { access_token, user: userData } = response.data;
+      
+      console.log('Login successful:', userData);
       
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -89,7 +92,9 @@ function App() {
       
       toast.success(`Welcome back, ${userData.display_name}!`);
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      console.error('Login error:', error);
+      const errorMessage = error.response?.data?.detail || 'Login failed. Please check your credentials.';
+      toast.error(errorMessage);
     }
   };
 
