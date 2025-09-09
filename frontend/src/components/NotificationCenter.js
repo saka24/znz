@@ -16,19 +16,26 @@ const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend, websocket }
   const [isLoading, setIsLoading] = useState(false);
 
   // Load notifications from backend
-  const loadNotifications = async () => {
+  const loadNotifications = async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    
     try {
       const token = localStorage.getItem('token');
+      if (!token) return;
+      
       const response = await axios.get(`${BACKEND_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('Loaded notifications:', response.data);
       setNotifications(response.data);
       setUnreadCount(response.data.filter(n => !n.read).length);
     } catch (error) {
       console.error('Failed to load notifications:', error);
       // Fallback to mock notifications for demo
       loadMockNotifications();
+    } finally {
+      if (showLoading) setIsLoading(false);
     }
   };
 
