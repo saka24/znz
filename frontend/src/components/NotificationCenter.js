@@ -7,6 +7,8 @@ import { Badge } from './ui/badge';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 const NotificationCenter = ({ user, onAcceptFriend, onDeclineFriend }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
