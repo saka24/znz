@@ -103,6 +103,13 @@ class PaymentRequest(BaseModel):
     status: str = "pending"  # pending, completed, failed
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
 # WebSocket Connection Manager
 class ConnectionManager:
     def __init__(self):
