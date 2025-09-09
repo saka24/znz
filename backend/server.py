@@ -800,6 +800,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                 formatted_notifications = [
                     {
                         **notification,
+                        "created_at": notification["created_at"].isoformat() if "created_at" in notification else None,
                         "_id": str(notification["_id"]) if "_id" in notification else None
                     } for notification in notifications
                 ]
