@@ -747,10 +747,15 @@ function App() {
             </div>
           )}
 
-          {activeTab === 'moments' && (
-            <div className="p-4 text-center text-gray-500">
-              <Star className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>Moments feature coming soon!</p>
+          {activeTab === 'news' && (
+            <div className="h-full">
+              <NewsFeed user={user} />
+            </div>
+          )}
+
+          {activeTab === 'marketplace' && (
+            <div className="h-full">
+              <Marketplace user={user} />
             </div>
           )}
         </ScrollArea>
