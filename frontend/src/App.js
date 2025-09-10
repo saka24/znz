@@ -763,7 +763,15 @@ function App() {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
-        {activeChat ? (
+        {activeTab === 'news' ? (
+          <div className="flex-1 bg-white">
+            <NewsFeed user={user} />
+          </div>
+        ) : activeTab === 'marketplace' ? (
+          <div className="flex-1 bg-white">
+            <Marketplace user={user} />
+          </div>
+        ) : activeChat ? (
           <>
             {/* Chat Header */}
             <div className="bg-white border-b border-gray-200 p-4">
