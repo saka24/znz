@@ -144,39 +144,39 @@ backend:
 frontend:
   - task: "NewsFeed component integration"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/components/NewsFeed.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
-      - working: false
+      - working: true
         agent: "main"
-        comment: "NewsFeed component is complete but needs integration into App.js. Component includes post creation, commenting, and social features."
+        comment: "NewsFeed component integrated into App.js with News tab. Component includes post creation, commenting, and social features."
 
   - task: "Marketplace component integration"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/components/Marketplace.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
-      - working: false
+      - working: true
         agent: "main"
-        comment: "Marketplace component is complete but needs integration into App.js. Component includes product browsing, selling, cart, and order management."
+        comment: "Marketplace component integrated into App.js with Market tab. Component includes product browsing, selling, cart, and order management."
 
   - task: "AccountSettings component integration"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/components/AccountSettings.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
     status_history:
-      - working: false
+      - working: true
         agent: "main"
-        comment: "AccountSettings component is complete but needs integration into App.js. Component includes personal info, security, privacy, and profile management."
+        comment: "AccountSettings component integrated into App.js accessible via Settings button. Component includes personal info, security, privacy, and profile management."
 
 metadata:
   created_by: "main_agent"
