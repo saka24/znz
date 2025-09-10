@@ -26,7 +26,8 @@ import {
   List,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  User
 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
