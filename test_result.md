@@ -111,11 +111,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "All news feed endpoints implemented: GET/POST /api/news, GET/POST /api/news/{post_id}/comments. Models include NewsPost and Comment with full functionality."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All News Feed APIs working correctly. GET /api/news retrieves posts, POST /api/news creates posts with authentication, GET /api/news/{post_id}/comments retrieves comments, POST /api/news/{post_id}/comments creates comments with authentication. All endpoints return proper HTTP status codes and data persistence works correctly."
 
   - task: "Marketplace API endpoints"
     implemented: true
