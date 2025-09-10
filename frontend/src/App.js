@@ -612,7 +612,7 @@ function App() {
           
           <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
             <button
-              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center px-2 py-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'chats' 
                   ? 'bg-white text-orange-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
@@ -623,7 +623,7 @@ function App() {
               Chats
             </button>
             <button
-              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center px-2 py-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'friends' 
                   ? 'bg-white text-orange-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
@@ -634,15 +634,26 @@ function App() {
               Friends
             </button>
             <button
-              className={`flex-1 flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'moments' 
+              className={`flex-1 flex items-center justify-center px-2 py-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'news' 
                   ? 'bg-white text-orange-600 shadow-sm' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
-              onClick={() => setActiveTab('moments')}
+              onClick={() => setActiveTab('news')}
             >
-              <Star className="h-4 w-4 mr-1" />
-              Moments
+              <Newspaper className="h-4 w-4 mr-1" />
+              News
+            </button>
+            <button
+              className={`flex-1 flex items-center justify-center px-2 py-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'marketplace' 
+                  ? 'bg-white text-orange-600 shadow-sm' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('marketplace')}
+            >
+              <ShoppingBag className="h-4 w-4 mr-1" />
+              Market
             </button>
           </div>
         </div>
