@@ -1288,6 +1288,8 @@ async def get_privacy_settings(current_user: str = Depends(get_current_user)):
             "typing_indicators": True
         }
         await db.privacy_settings.insert_one(default_settings)
+        # Remove the _id field that MongoDB adds automatically
+        default_settings.pop("_id", None)
         return default_settings
     
     return {
