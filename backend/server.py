@@ -1213,6 +1213,128 @@ async def get_orders(current_user: str = Depends(get_current_user)):
         } for order in orders
     ]
 
+# Account management endpoints
+@app.get("/api/users/profile")
+async def get_user_profile(current_user: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user}, {"password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        **user,
+        "_id": str(user["_id"]) if "_id" in user else None
+    }
+
+@app.put("/api/users/profile")
+async def update_user_profile(profile_data: dict, current_user: str = Depends(get_current_user)):
+    # Update allowed fields
+    allowed_fields = ["display_name", "phone", "bio", "location", "website"]
+    update_data = {k: v for k, v in profile_data.items() if k in allowed_fields}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    await db.users.update_one(
+        {"id": current_user},
+        {"$set": update_data}
+    )
+    
+    # Get updated user
+    updated_user = await db.users.find_one({"id": current_user}, {"password_hash": 0})
+    
+    return {
+        "message": "Profile updated successfully",
+        "user": {
+            **updated_user,
+            "_id": str(updated_user["_id"]) if "_id" in updated_user else None
+        }
+    }
+
+@app.post("/api/users/change-password")
+async def change_password(data: dict, current_user: str = Depends(get_current_user)):
+    current_password = data.get("current_password")
+    new_password = data.get("new_password")
+    
+    if not current_password or not new_password:
+        raise HTTPException(status_code=400, detail="Current and new passwords are required")
+    
+    # Verify current password
+    user = await db.users.find_one({"id": current_user})
+    if not user or not verify_password(current_password, user["password_hash"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Update password
+    new_password_hash = hash_password(new_password)
+    await db.users.update_one(
+        {"id": current_user},
+        {"$set": {"password_hash": new_password_hash, "updated_at": datetime.utcnow()}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+@app.get("/api/users/privacy-settings")
+async def get_privacy_settings(current_user: str = Depends(get_current_user)):
+    settings = await db.privacy_settings.find_one({"user_id": current_user})
+    
+    if not settings:
+        # Return default settings
+        default_settings = {
+            "user_id": current_user,
+            "last_seen_online": True,
+            "profile_photo_visible": True,
+            "phone_visible": False,
+            "email_visible": False,
+            "search_by_phone": True,
+            "search_by_email": True,
+            "read_receipts": True,
+            "typing_indicators": True
+        }
+        await db.privacy_settings.insert_one(default_settings)
+        return default_settings
+    
+    return {
+        **settings,
+        "_id": str(settings["_id"]) if "_id" in settings else None
+    }
+
+@app.put("/api/users/privacy-settings")
+async def update_privacy_settings(settings_data: dict, current_user: str = Depends(get_current_user)):
+    settings_data["user_id"] = current_user
+    settings_data["updated_at"] = datetime.utcnow()
+    
+    await db.privacy_settings.update_one(
+        {"user_id": current_user},
+        {"$set": settings_data},
+        upsert=True
+    )
+    
+    return {"message": "Privacy settings updated successfully"}
+
+@app.post("/api/users/profile-picture")
+async def upload_profile_picture(current_user: str = Depends(get_current_user)):
+    # Mock implementation - in production, integrate with cloud storage
+    # For now, return a placeholder URL
+    avatar_url = f"https://api.dicebear.com/7.x/avataaars/svg?seed={current_user}"
+    
+    await db.users.update_one(
+        {"id": current_user},
+        {"$set": {"avatar_url": avatar_url, "updated_at": datetime.utcnow()}}
+    )
+    
+    return {"message": "Profile picture updated", "avatar_url": avatar_url}
+
+@app.delete("/api/users/account")
+async def delete_account(current_user: str = Depends(get_current_user)):
+    # Delete user data
+    await db.users.delete_one({"id": current_user})
+    await db.friends.delete_many({"$or": [{"user_id": current_user}, {"friend_id": current_user}]})
+    await db.messages.delete_many({"sender_id": current_user})
+    await db.notifications.delete_many({"user_id": current_user})
+    await db.privacy_settings.delete_one({"user_id": current_user})
+    await db.products.delete_many({"seller_id": current_user})
+    await db.cart.delete_many({"user_id": current_user})
+    await db.orders.delete_many({"$or": [{"buyer_id": current_user}, {"seller_id": current_user}]})
+    
+    return {"message": "Account deleted successfully"}
+
 # Health check
 @app.get("/api/health")
 async def health_check():
