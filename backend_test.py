@@ -394,6 +394,192 @@ class WeChatCloneAPITester:
         )
         return success, response
 
+    # News Feed API Tests
+    def test_get_news(self):
+        """Test getting news posts"""
+        success, response = self.run_test("Get News Posts", "GET", "news", 200)
+        return success, response
+
+    def test_create_news_post(self, title="Test News Post", content="This is a test news post", category="tech"):
+        """Test creating a news post"""
+        news_data = {
+            "title": title,
+            "content": content,
+            "category": category,
+            "image_url": "https://example.com/test-image.jpg"
+        }
+        
+        success, response = self.run_test("Create News Post", "POST", "news", 200, data=news_data)
+        return success, response
+
+    def test_get_comments(self, post_id):
+        """Test getting comments for a news post"""
+        success, response = self.run_test(
+            f"Get Comments (post_id: {post_id})",
+            "GET",
+            f"news/{post_id}/comments",
+            200
+        )
+        return success, response
+
+    def test_create_comment(self, post_id, content="This is a test comment"):
+        """Test creating a comment on a news post"""
+        comment_data = {
+            "content": content
+        }
+        
+        success, response = self.run_test(
+            f"Create Comment (post_id: {post_id})",
+            "POST",
+            f"news/{post_id}/comments",
+            200,
+            data=comment_data
+        )
+        return success, response
+
+    # Marketplace API Tests
+    def test_get_products(self, category=None, search=None):
+        """Test getting products"""
+        endpoint = "products"
+        params = []
+        if category:
+            params.append(f"category={category}")
+        if search:
+            params.append(f"search={search}")
+        if params:
+            endpoint += "?" + "&".join(params)
+        
+        success, response = self.run_test("Get Products", "GET", endpoint, 200)
+        return success, response
+
+    def test_create_product(self, name="Test Product", price=99.99, category="electronics"):
+        """Test creating a product listing"""
+        product_data = {
+            "name": name,
+            "description": "This is a test product for sale",
+            "price": price,
+            "category": category,
+            "images": ["https://example.com/product1.jpg"],
+            "stock_quantity": 5,
+            "condition": "new",
+            "location": "Dar es Salaam, Tanzania",
+            "tags": ["test", "electronics", "gadget"]
+        }
+        
+        success, response = self.run_test("Create Product", "POST", "products", 200, data=product_data)
+        return success, response
+
+    def test_like_product(self, product_id):
+        """Test liking/unliking a product"""
+        success, response = self.run_test(
+            f"Like Product (product_id: {product_id})",
+            "POST",
+            f"products/{product_id}/like",
+            200
+        )
+        return success, response
+
+    def test_add_to_cart(self, product_id, quantity=1):
+        """Test adding product to cart"""
+        cart_data = {
+            "product_id": product_id,
+            "quantity": quantity
+        }
+        
+        success, response = self.run_test("Add to Cart", "POST", "cart/add", 200, data=cart_data)
+        return success, response
+
+    def test_get_cart(self):
+        """Test getting user's cart"""
+        success, response = self.run_test("Get Cart", "GET", "cart", 200)
+        return success, response
+
+    def test_create_order(self, product_ids, quantities=None):
+        """Test creating an order"""
+        if quantities is None:
+            quantities = [1] * len(product_ids)
+        
+        order_data = {
+            "product_ids": product_ids,
+            "quantities": quantities,
+            "shipping_address": {
+                "street": "123 Test Street",
+                "city": "Dar es Salaam",
+                "state": "Dar es Salaam",
+                "postal_code": "12345",
+                "country": "Tanzania"
+            },
+            "payment_method": "tigo_pesa"
+        }
+        
+        success, response = self.run_test("Create Order", "POST", "orders", 200, data=order_data)
+        return success, response
+
+    def test_get_orders(self):
+        """Test getting user's orders"""
+        success, response = self.run_test("Get Orders", "GET", "orders", 200)
+        return success, response
+
+    # Account Settings API Tests
+    def test_get_user_profile(self):
+        """Test getting user profile"""
+        success, response = self.run_test("Get User Profile", "GET", "users/profile", 200)
+        return success, response
+
+    def test_update_user_profile(self, display_name="Updated Test User", phone="+255123456789"):
+        """Test updating user profile"""
+        profile_data = {
+            "display_name": display_name,
+            "phone": phone,
+            "bio": "This is my updated bio",
+            "location": "Dar es Salaam, Tanzania",
+            "website": "https://example.com"
+        }
+        
+        success, response = self.run_test("Update User Profile", "PUT", "users/profile", 200, data=profile_data)
+        return success, response
+
+    def test_change_password(self, current_password, new_password="NewTestPass123!"):
+        """Test changing user password"""
+        password_data = {
+            "current_password": current_password,
+            "new_password": new_password
+        }
+        
+        success, response = self.run_test("Change Password", "POST", "users/change-password", 200, data=password_data)
+        return success, response
+
+    def test_get_privacy_settings(self):
+        """Test getting privacy settings"""
+        success, response = self.run_test("Get Privacy Settings", "GET", "users/privacy-settings", 200)
+        return success, response
+
+    def test_update_privacy_settings(self):
+        """Test updating privacy settings"""
+        privacy_data = {
+            "last_seen_online": False,
+            "profile_photo_visible": True,
+            "phone_visible": False,
+            "email_visible": False,
+            "search_by_phone": True,
+            "search_by_email": False,
+            "read_receipts": True,
+            "typing_indicators": False
+        }
+        
+        success, response = self.run_test("Update Privacy Settings", "PUT", "users/privacy-settings", 200, data=privacy_data)
+        return success, response
+
+    def test_upload_profile_picture(self):
+        """Test uploading profile picture"""
+        success, response = self.run_test("Upload Profile Picture", "POST", "users/profile-picture", 200)
+        return success, response
+
+    def test_delete_account(self):
+        """Test deleting user account"""
+        success, response = self.run_test("Delete Account", "DELETE", "users/account", 200)
+        return success, response
+
     def run_comprehensive_test(self):
         """Run all tests in sequence"""
         print("🚀 Starting WeChat Clone API Comprehensive Testing")
