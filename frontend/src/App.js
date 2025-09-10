@@ -1004,6 +1004,26 @@ function App() {
         isOpen={showForgotPasswordModal}
         onClose={() => setShowForgotPasswordModal(false)}
       />
+
+      {/* Account Settings Modal */}
+      <Dialog open={showAccountSettings} onOpenChange={setShowAccountSettings}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Account Settings</DialogTitle>
+          </DialogHeader>
+          <AccountSettings 
+            user={user}
+            onUpdateUser={(updatedUser) => {
+              setUser(updatedUser);
+              localStorage.setItem('user', JSON.stringify(updatedUser));
+            }}
+            onLogout={() => {
+              setShowAccountSettings(false);
+              logout();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
