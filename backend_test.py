@@ -694,7 +694,139 @@ class WeChatCloneAPITester:
         # Test invalid friend request scenarios
         self.test_invalid_friend_requests()
 
-        # Test 9: Payment System
+        # Test 9: News Feed System
+        print("\n📰 Testing News Feed System...")
+        
+        # Get news posts (should be empty initially)
+        news_success, news_response = self.test_get_news()
+        if news_success:
+            print(f"   ✅ Retrieved {len(news_response)} news posts")
+        
+        # Create a news post
+        create_news_success, create_news_response = self.test_create_news_post(
+            f"Breaking News {timestamp}",
+            "This is a test news post created during API testing",
+            "tech"
+        )
+        
+        news_post_id = None
+        if create_news_success and 'post' in create_news_response:
+            news_post_id = create_news_response['post']['id']
+            print(f"   ✅ Created news post with ID: {news_post_id}")
+        
+        # Get comments for the news post (should be empty)
+        if news_post_id:
+            comments_success, comments_response = self.test_get_comments(news_post_id)
+            if comments_success:
+                print(f"   ✅ Retrieved {len(comments_response)} comments for news post")
+            
+            # Create a comment on the news post
+            comment_success, comment_response = self.test_create_comment(
+                news_post_id,
+                "This is a test comment on the news post"
+            )
+            if comment_success:
+                print("   ✅ Successfully created comment on news post")
+
+        # Test 10: Marketplace System
+        print("\n🛒 Testing Marketplace System...")
+        
+        # Get products (should be empty initially)
+        products_success, products_response = self.test_get_products()
+        if products_success:
+            print(f"   ✅ Retrieved {len(products_response)} products")
+        
+        # Create a product listing
+        create_product_success, create_product_response = self.test_create_product(
+            f"Test Smartphone {timestamp}",
+            299.99,
+            "electronics"
+        )
+        
+        product_id = None
+        if create_product_success and 'product' in create_product_response:
+            product_id = create_product_response['product']['id']
+            print(f"   ✅ Created product with ID: {product_id}")
+        
+        # Test product search
+        search_products_success, search_products_response = self.test_get_products(search="smartphone")
+        if search_products_success:
+            print(f"   ✅ Product search returned {len(search_products_response)} results")
+        
+        # Test category filtering
+        category_products_success, category_products_response = self.test_get_products(category="electronics")
+        if category_products_success:
+            print(f"   ✅ Category filter returned {len(category_products_response)} products")
+        
+        # Like the product
+        if product_id:
+            like_success, like_response = self.test_like_product(product_id)
+            if like_success:
+                print("   ✅ Successfully liked product")
+            
+            # Add product to cart
+            cart_add_success, cart_add_response = self.test_add_to_cart(product_id, 2)
+            if cart_add_success:
+                print("   ✅ Successfully added product to cart")
+        
+        # Get cart contents
+        cart_success, cart_response = self.test_get_cart()
+        if cart_success:
+            print(f"   ✅ Retrieved cart with {len(cart_response)} items")
+        
+        # Create an order
+        if product_id:
+            order_success, order_response = self.test_create_order([product_id], [1])
+            if order_success:
+                print("   ✅ Successfully created order")
+        
+        # Get orders
+        orders_success, orders_response = self.test_get_orders()
+        if orders_success:
+            print(f"   ✅ Retrieved {len(orders_response)} orders")
+
+        # Test 11: Account Settings System
+        print("\n⚙️ Testing Account Settings System...")
+        
+        # Get user profile
+        profile_success, profile_response = self.test_get_user_profile()
+        if profile_success:
+            print("   ✅ Successfully retrieved user profile")
+        
+        # Update user profile
+        update_profile_success, update_profile_response = self.test_update_user_profile(
+            f"Updated {user1_info['user_data']['display_name']}",
+            "+255987654321"
+        )
+        if update_profile_success:
+            print("   ✅ Successfully updated user profile")
+        
+        # Get privacy settings
+        privacy_get_success, privacy_get_response = self.test_get_privacy_settings()
+        if privacy_get_success:
+            print("   ✅ Successfully retrieved privacy settings")
+        
+        # Update privacy settings
+        privacy_update_success, privacy_update_response = self.test_update_privacy_settings()
+        if privacy_update_success:
+            print("   ✅ Successfully updated privacy settings")
+        
+        # Upload profile picture
+        profile_pic_success, profile_pic_response = self.test_upload_profile_picture()
+        if profile_pic_success:
+            print("   ✅ Successfully uploaded profile picture")
+        
+        # Test password change
+        password_change_success, password_change_response = self.test_change_password(
+            user1_info['password'],
+            "NewTestPassword123!"
+        )
+        if password_change_success:
+            print("   ✅ Successfully changed password")
+            # Update user info with new password for potential future use
+            user1_info['password'] = "NewTestPassword123!"
+
+        # Test 12: Payment System
         print("\n💳 Testing Payment System...")
         
         # Send payment request from user1 to user2
