@@ -37,7 +37,10 @@ import {
   UserPlus,
   Zap,
   Globe,
-  Star
+  Star,
+  Newspaper,
+  ShoppingBag,
+  User
 } from 'lucide-react';
 import axios from 'axios';
 
