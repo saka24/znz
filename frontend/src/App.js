@@ -963,7 +963,12 @@ function App() {
                 Welcome to SISI Chat
               </h3>
               <p className="text-gray-500">
-                Select a chat to start messaging or create a new conversation
+                {activeTab === 'chats' 
+                  ? 'Select a chat to start messaging or create a new conversation'
+                  : activeTab === 'friends'
+                  ? 'Manage your friends and add new connections'
+                  : 'Switch to News or Marketplace to explore more features'
+                }
               </p>
             </div>
           </div>
