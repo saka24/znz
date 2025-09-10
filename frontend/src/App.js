@@ -604,7 +604,7 @@ function App() {
                 onAcceptFriend={handleAcceptFriend}
                 onDeclineFriend={handleDeclineFriend}
               />
-              <Button variant="ghost" size="sm" onClick={logout}>
+              <Button variant="ghost" size="sm" onClick={() => setShowAccountSettings(true)}>
                 <Settings className="h-4 w-4" />
               </Button>
             </div>
