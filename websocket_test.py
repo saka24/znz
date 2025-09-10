@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 
 class WebSocketTester:
-    def __init__(self, base_url="https://connect-chat-18.preview.emergentagent.com"):
+    def __init__(self, base_url="https://convomate-4.preview.emergentagent.com"):
         self.base_url = base_url
         self.ws_url = base_url.replace('https://', 'wss://').replace('http://', 'ws://')
         

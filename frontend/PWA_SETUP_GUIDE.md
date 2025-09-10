@@ -37,7 +37,7 @@ npm run build
 
 ### Step 2: Your PWA is Live!
 Your SISI Chat PWA is already running at:
-**https://connect-chat-18.preview.emergentagent.com**
+**https://convomate-4.preview.emergentagent.com**
 
 ## 📱 How Users Install Your App
 
@@ -223,7 +223,7 @@ Works on any device, anywhere
 ## 🎉 Your SISI Chat PWA is Ready!
 
 **Users can install your app right now by visiting:**
-https://connect-chat-18.preview.emergentagent.com
+https://convomate-4.preview.emergentagent.com
 
 **Marketing message:**
 "Experience SISI Chat - Install directly from your browser! No app store needed. Works on iPhone, Android, and Desktop. Smart messaging with AI features, real-time chat, and secure payments. Just visit our website and tap 'Install'!"
