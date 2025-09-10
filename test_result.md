@@ -141,11 +141,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "All account settings endpoints implemented: profile management, password change, privacy settings, profile picture upload, account deletion."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All Account Settings APIs working correctly. GET /api/users/profile retrieves user profile with authentication, PUT /api/users/profile updates profile with authentication, POST /api/users/change-password changes password with current password verification, GET /api/users/privacy-settings retrieves privacy settings with authentication (fixed ObjectId serialization issue), PUT /api/users/privacy-settings updates privacy settings with authentication, POST /api/users/profile-picture uploads profile picture with authentication, DELETE /api/users/account deletes account with authentication. All endpoints properly validate authentication and handle data updates correctly."
 
 frontend:
   - task: "NewsFeed component integration"
